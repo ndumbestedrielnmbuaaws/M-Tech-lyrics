@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M TECH INC - LYRICS CONTROLLER v000.5</title>
+<meta name="version" content="000.5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-69 -20 604 604'%3E%3Crect x='-69' y='-20' width='604' height='604' rx='110' fill='%230b1a2d'/%3E%3Cpolygon points='233,22.47 446.5,144.74 446.5,419.26 233,541.53 19.5,419.26 19.5,144.74' fill='none' stroke='%2323c3e7' stroke-width='39'/%3E%3Cpath d='M126.5 388.5V190L233 312.5 339.5 190v198.5' fill='none' stroke='%23eff4fa' stroke-width='39' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='233' cy='312.5' r='33.2' fill='%2323c3e7'/%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box;font-family:Inter,system-ui,"Segoe UI",sans-serif}
+[hidden]{display:none !important}
+body{margin:0;background:#0a1420;color:#fff;min-height:100vh;display:flex;flex-direction:column}
+.header{padding:10px 16px;background:#08101c;border-bottom:2px solid #23c3e7;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logoMark{width:43px;height:52px;flex:none}
+.logoMain{font-size:22px;font-weight:900;letter-spacing:1px;line-height:1}
+.logoMain .inc{font-family:ui-monospace,Consolas,monospace;font-size:11px;font-weight:600;letter-spacing:4px;margin-left:7px;color:#23c3e7}
+.logoSub{font-size:10px;letter-spacing:3px;color:#23c3e7;font-weight:700}
+.logoSub .ver{letter-spacing:1px;color:#5a7a9a;margin-left:4px}
+.linkBox{margin-left:auto;display:flex;flex-direction:column;gap:7px;align-items:flex-end;min-width:0;max-width:100%}
+.liveUrl{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:100%}
+.liveUrl .lbl{font-size:10px;font-weight:800;letter-spacing:1px;color:#5a7a9a}
+.liveUrl input{width:460px;max-width:100%;padding:7px 10px;border-radius:7px;border:1px solid #23c3e7;background:#0a1420;color:#23c3e7;font-size:11px;font-family:ui-monospace,Consolas,monospace;min-width:0}
+.statusRow{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:#0f1d2f;border:1px solid #1a2f4a;font-size:10px;font-weight:800;letter-spacing:.5px;color:#9fb3c8;cursor:default}
+.chip i{width:8px;height:8px;border-radius:50%;background:#5a7a9a;flex:none}
+.chip.ok{color:#d7ffe9;border-color:#145c3a}.chip.ok i{background:#00e676;box-shadow:0 0 6px #00e676}
+.chip.warn{color:#ffe7b0;border-color:#5c4a14}.chip.warn i{background:#ffb300}
+.chip.bad{color:#ffd0d0;border-color:#5c1f1f}.chip.bad i{background:#ff5252}
+.linkBtn{background:transparent;border:1px solid #1e3a5a;color:#9fb3c8;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;letter-spacing:.5px}
+.linkBtn:hover{border-color:#23c3e7;color:#fff}
+.linkBtn.armed{border-color:#ff6b81;color:#ff6b81}
+.top{padding:10px;background:#0f1d2f;border-bottom:1px solid #1a2f4a;display:flex;gap:6px;flex-wrap:wrap}
+input[type=text]{flex:1;min-width:120px;padding:11px;border-radius:8px;border:1px solid #1e3a5a;background:#0a1420;color:#fff}
+button{padding:9px 13px;border-radius:8px;border:0;font-weight:800;cursor:pointer;font-size:12px}
+button:disabled{opacity:.6;cursor:wait}
+.btnLive{background:#23c3e7;color:#08101c}
+.btn2{background:#1a2f4a;color:#fff}
+.btnGreen{background:#00e676;color:#08101c}
+.btnDanger{background:#3a1420;color:#ff6b81}
+.btnSmall{padding:5px 10px;font-size:11px}
+.liveArea{height:44vh;min-height:230px;display:flex;flex-direction:column;gap:8px;background:radial-gradient(ellipse at center,#12243d 0%,#08101c 70%);padding:10px 12px 12px;border-bottom:2px solid #23c3e7}
+.airBar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pvWrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.pvFrame{position:relative;overflow:hidden;border-radius:6px;background:#26354a linear-gradient(160deg,#3d4f66 0%,#1b2738 55%,#0e151f 100%);box-shadow:0 0 0 1px #1e3a5a,0 8px 24px rgba(0,0,0,.35)}
+#pv{position:absolute;left:0;top:0;width:1920px;height:1080px;border:0;transform-origin:0 0;pointer-events:none;background:transparent}
+#emptyHint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:12px;color:#8aa3bd;font-size:14px;text-align:center;pointer-events:none}
+#pvNote{position:absolute;right:8px;top:8px;font-size:10px;font-weight:700;color:#cfe3f5;background:rgba(0,0,0,.55);padding:3px 8px;border-radius:10px;pointer-events:none}
+#sel{position:absolute;outline:1.5px dashed #23c3e7;outline-offset:3px;cursor:move;touch-action:none}
+#sel.fixed{cursor:default}
+#sel .h{position:absolute;width:14px;height:14px;background:#23c3e7;border:2px solid #08101c;border-radius:3px;touch-action:none}
+#sel .h[data-h=l],#sel .h[data-h=r]{top:50%;margin-top:-7px;cursor:ew-resize}
+#sel .h[data-h=l]{left:-10px}
+#sel .h[data-h=r]{right:-10px}
+#sel .h[data-h=s]{right:-10px;top:-10px;cursor:nesw-resize;border-radius:50%;background:#fff}
+#sel.down .h[data-h=s]{top:auto;bottom:-10px;cursor:nwse-resize}
+#btnStyle[aria-expanded=true]{background:#23c3e7;color:#08101c}
+/* style panel */
+#stylePanel{background:#0c1828;border-bottom:2px solid #23c3e7;padding:12px 14px 14px}
+.spHead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.spHead h2{margin:0;font-size:15px;font-weight:800}
+.spHead p{margin:0;flex:1;min-width:220px;font-size:12px;color:#8aa3bd;line-height:1.4}
+.spGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.grp{background:#0f1d2f;border:1px solid #1a2f4a;border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:9px}
+.grp h3{margin:0;font-size:12px;font-weight:800;color:#23c3e7}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{flex:1;padding:6px 5px;white-space:nowrap;font-size:11px;font-weight:700;background:#14263c;color:#cfe3f5;border:1px solid #1e3a5a;border-radius:7px}
+.seg button[aria-pressed=true]{background:#23c3e7;color:#08101c;border-color:#23c3e7}
+.cards button{display:flex;flex-direction:column;align-items:center;gap:5px;padding:7px 6px}
+.mini{display:block;width:54px;height:30px;border-radius:3px;background:#2b3d55;position:relative;overflow:hidden}
+.mini::after{content:"";position:absolute;background:#cfe3f5}
+.mini-bar::after{left:6px;right:6px;bottom:4px;height:7px;background:#0b1a2d;border-top:2px solid #23c3e7}
+.mini-box::after{left:14px;right:14px;bottom:4px;height:9px;border-radius:2px;background:#0b1a2d}
+.mini-sub::after{left:12px;right:12px;bottom:5px;height:3px;box-shadow:0 -5px 0 #cfe3f5}
+.mini-full::after{left:9px;right:9px;top:11px;height:4px;box-shadow:0 6px 0 #cfe3f5}
+[aria-pressed=true] .mini{background:#1b5d6f}
+.themes{display:flex;flex-wrap:wrap;gap:6px}
+.themes button{display:flex;align-items:center;gap:6px;padding:5px 9px 5px 5px;font-size:11px;font-weight:700;background:#14263c;color:#cfe3f5;border:1px solid #1e3a5a;border-radius:20px}
+.themes button[aria-pressed=true]{border-color:#23c3e7;box-shadow:0 0 0 1px #23c3e7}
+.sw{width:22px;height:22px;border-radius:50%;flex:none;border:1px solid rgba(255,255,255,.25)}
+.rng{display:grid;grid-template-columns:90px 1fr 40px;align-items:center;gap:8px;font-size:12px;color:#cfe3f5}
+.rng input{width:100%;accent-color:#23c3e7}
+.rng output{font-size:11px;color:#8aa3bd;text-align:right;font-variant-numeric:tabular-nums}
+.row{display:grid;grid-template-columns:90px 1fr;align-items:center;gap:8px;font-size:12px;color:#cfe3f5}
+.row select{width:100%;padding:7px 8px;border-radius:7px;border:1px solid #1e3a5a;background:#0a1420;color:#fff;font-size:12px}
+.colours{display:flex;gap:10px;flex-wrap:wrap}
+.colours label{display:flex;align-items:center;gap:6px;font-size:12px;color:#cfe3f5}
+.colours input{width:34px;height:26px;padding:0;border:1px solid #1e3a5a;border-radius:6px;background:none;cursor:pointer}
+#stylePanel input[type=text]{flex:none;width:100%;min-width:0;padding:8px 10px;font-size:12px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #23c3e7;outline-offset:2px}
+#liveLabel{background:#ff3b5c;color:#fff;padding:5px 12px;border-radius:20px;font-size:10px;font-weight:900;letter-spacing:1px}
+#airStatus{font-size:10px;font-weight:900;letter-spacing:.5px;padding:5px 10px;border-radius:20px;display:none}
+#airStatus.ok,#airStatus.warn,#airStatus.bad{display:inline-block}
+#airStatus.ok{background:#0f3a26;color:#00e676}
+#airStatus.warn{background:#3a3010;color:#ffb300}
+#airStatus.bad{background:#3a1420;color:#ff6b81}
+#btnClear{margin-left:auto}
+.partsArea{flex:1;background:#0a1420;padding:12px;overflow-y:auto}
+.partsHead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.partsHead .tip{font-size:11px;color:#5a7a9a}
+#songInfo{font-size:11px;color:#23c3e7;font-weight:800;margin-right:8px}
+.partRow{display:flex;gap:10px;background:#0f1d2f;border:1px solid #1a2f4a;border-radius:12px;padding:14px;margin-bottom:10px;align-items:center;cursor:pointer;transition:border-color .15s,background .15s}
+.partRow:hover{border-color:#23c3e7;background:#0e2236}
+.partRow.active{border-color:#ff3b5c;background:#2a1420;box-shadow:0 0 18px rgba(255,59,92,.25)}
+.partText{white-space:pre-wrap;font-size:14px;line-height:1.3;flex:1}
+.badge{font-size:10px;background:#23c3e7;color:#08101c;padding:3px 7px;border-radius:20px;font-weight:900;flex:none}
+.goBtn{background:#23c3e7;color:#08101c;padding:8px 16px;font-size:12px;font-weight:900;flex:none}
+.goBtn.active{background:#ff3b5c;color:#fff}
+.footer{padding:8px 12px;background:#08101c;border-top:1px solid #1a2f4a;font-size:10px;color:#5a7a9a}
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#08101c;border:1px solid #23c3e7;color:#fff;padding:9px 14px;border-radius:10px;font-size:12px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10;max-width:90vw;text-align:center}
+#toast.show{opacity:1}
+dialog{background:#0f1d2f;color:#fff;border:1px solid #23c3e7;border-radius:14px;padding:16px;width:min(560px,94vw)}
+dialog::backdrop{background:rgba(4,10,18,.78)}
+dialog h3{margin:0 0 12px;font-size:13px;letter-spacing:2px;color:#23c3e7}
+.dlgRow{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+dialog textarea{width:100%;min-height:260px;padding:11px;border-radius:8px;border:1px solid #1e3a5a;background:#0a1420;color:#fff;font-size:14px;line-height:1.35;resize:vertical}
+.dlgNote{font-size:11px;color:#5a7a9a;margin:6px 0 12px}
+.songTools{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.langBar{display:inline-flex;gap:4px;flex-wrap:wrap}
+.langChip{padding:4px 10px;border-radius:14px;font-size:11px;font-weight:800;background:#14263c;color:#cfe3f5;border:1px solid #1e3a5a}
+.langChip[aria-pressed=true]{background:#23c3e7;color:#08101c;border-color:#23c3e7}
+.partText .sub{display:block;margin-top:5px;font-size:13px;font-style:italic;color:#8fd8ea}
+#trDialog{width:min(660px,94vw)}
+.trRow{display:grid;grid-template-columns:96px 1fr;gap:8px;align-items:center;margin-bottom:8px;font-size:12px;color:#cfe3f5}
+.trRow select{width:100%;padding:10px;border-radius:8px;border:1px solid #1e3a5a;background:#0a1420;color:#fff;font-size:13px}
+.trRow input[type=text]{width:100%}
+.trList{max-height:36vh;overflow-y:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;margin:2px 0 12px;padding:2px}
+.langOpt{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;background:#14263c;border:1px solid #1e3a5a;border-radius:8px;padding:7px 9px;color:#fff}
+.langOpt[aria-selected=true]{border-color:#23c3e7;box-shadow:0 0 0 1px #23c3e7;background:#123049}
+.langOpt .ln{font-size:13px;font-weight:800}
+.langOpt .le{font-size:11px;color:#8aa3bd;font-weight:600}
+.langOpt .ls{font-size:10px;color:#00e676;font-weight:800}
+.langOpt .lt{font-size:10px;color:#ffd166;font-weight:800}
+.trStatus{min-height:18px;font-size:12px;color:#8aa3bd;margin-bottom:10px;line-height:1.4}
+.trStatus.bad{color:#ff6b81}
+#dlgTitle:disabled,#dlgWriter:disabled{opacity:.6}
+.dlgSplit{display:flex;align-items:center;gap:8px;font-size:12px;color:#cfe3f5;margin-top:8px}
+.dlgSplit input{accent-color:#23c3e7;width:16px;height:16px}
+/* search results */
+#results{background:#0c1828;border-bottom:1px solid #1a2f4a;padding:10px 12px 12px}
+.rsHead{display:flex;align-items:center;gap:8px}
+.rsHead h2{margin:0;flex:1;min-width:0;font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rsGroup{margin-top:10px}
+.rsGroup h3{margin:0 0 6px;font-size:12px;font-weight:800;color:#23c3e7}
+.rsItem{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#0f1d2f;border:1px solid #1a2f4a;border-radius:9px;padding:9px 11px;margin-bottom:6px;color:#fff;font-weight:600}
+.rsItem:hover{border-color:#23c3e7;background:#0e2236}
+.rsItem:disabled{cursor:wait}
+.rsMain{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.rsTitle{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rsSub{font-size:12px;color:#8aa3bd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rsSnip{font-size:12px;color:#cfe3f5;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rsSrc{flex:none;font-size:10px;font-weight:800;color:#9fb3c8;border:1px solid #1e3a5a;border-radius:10px;padding:3px 8px}
+.rsSrc.ready{color:#00e676;border-color:#145c3a}
+.rsSrc.none{color:#ff6b81;border-color:#5c1f1f}
+.rsNote{font-size:12px;color:#8aa3bd;padding:6px 2px;line-height:1.4}
+.rsActions{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:8px}
+.rsHint{font-size:12px;color:#8aa3bd;margin-right:4px}
+.rsWeb{text-decoration:none;border-radius:8px;font-weight:800;display:inline-block}
+.spin{display:inline-block;width:10px;height:10px;margin-right:7px;vertical-align:-1px;border:2px solid #23c3e7;border-right-color:transparent;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation:none}}
+.dlgActions{display:flex;gap:6px;align-items:center}
+.dlgActions .spacer{flex:1}
+@media(max-width:700px){.linkBox{margin-left:0;align-items:stretch;width:100%}.liveUrl,.statusRow{justify-content:flex-start}.liveUrl input{flex:1;width:auto}.liveArea{height:auto;min-height:0}.pvWrap{flex:none}.rng{grid-template-columns:90px 1fr 40px}.row{grid-template-columns:90px 1fr}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="mtechMark" viewBox="0 0 466 564">
+<polygon points="233,22.47 446.5,144.74 446.5,419.26 233,541.53 19.5,419.26 19.5,144.74" fill="none" stroke="#23c3e7" stroke-width="39"/>
+<path d="M126.5 388.5V190L233 312.5 339.5 190v198.5" fill="none" stroke="#eff4fa" stroke-width="39" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="233" cy="312.5" r="33.2" fill="#23c3e7"/>
+</symbol>
+</svg>
+
+<div class="header">
+  <svg class="logoMark" role="img" aria-label="M TECH INC logo"><use href="#mtechMark"/></svg>
+  <div><div class="logoMain">M TECH<span class="inc">INC</span></div><div class="logoSub">LYRICS CONTROLLER <span class="ver" id="appVersion">v000.5</span></div></div>
+  <div class="linkBox">
+    <div class="liveUrl">
+      <span class="lbl" id="linkLabel">YOUR OBS / vMix LINK</span>
+      <input id="liveUrlBox" readonly value="">
+      <button class="btnLive btnSmall" id="btnCopyUrl">COPY</button>
+      <button class="btn2 btnSmall" id="btnTest" title="Open your output in a new tab to check the connection">TEST</button>
+    </div>
+    <div class="statusRow">
+      <span class="chip" id="chipLink"><i></i><b>CONNECTING…</b></span>
+      <span class="chip" id="chipOut"><i></i><b>NO OUTPUT YET</b></span>
+      <button class="linkBtn" id="btnPhone" title="Copy a link that controls this same screen from your phone or another computer">CONTROL FROM PHONE</button>
+      <button class="linkBtn" id="btnNewRoom" title="Make a new private OBS link. The old link stops working.">NEW LINK</button>
+    </div>
+  </div>
+</div>
+
+<div class="top">
+  <input type="text" id="title" placeholder="Song title or a line from the song" list="titleList" autocomplete="off">
+  <input type="text" id="writer" placeholder="Singer (optional)" list="writerList" autocomplete="off">
+  <datalist id="titleList"></datalist><datalist id="writerList"></datalist>
+  <button class="btnLive" id="btnSearch">SEARCH</button>
+  <button class="btn2" id="btnFetch">Fetch Online</button>
+  <button class="btn2" id="btnAdd">+ Add</button>
+  <button class="btnGreen" id="btnExport">⬇ Export</button>
+  <button class="btn2" id="btnImport">⬆ Import</button>
+  <input type="file" id="importFile" style="display:none" accept=".json,application/json">
+</div>
+<section id="results" hidden aria-live="polite" aria-label="Search results"></section>
+
+<div class="liveArea" id="liveArea">
+  <div class="airBar">
+    <span id="liveLabel">● ON AIR</span>
+    <span id="airStatus"></span>
+    <button class="btn2 btnSmall" id="btnStyle" aria-expanded="false" aria-controls="stylePanel" title="Change how the lyrics look on screen">🎨 STYLE</button>
+    <button class="btnDanger btnSmall" id="btnClear" title="Blank the OBS/vMix screen (key: B)">CLEAR SCREEN</button>
+  </div>
+  <div class="pvWrap" id="pvWrap">
+    <div class="pvFrame" id="pvFrame">
+      <iframe id="pv" title="Preview of your OBS output" tabindex="-1"></iframe>
+      <div id="emptyHint">Screen is clear. Click a part below to put it on screen.</div>
+      <div id="pvNote" hidden>Sample text, not on air</div>
+      <div id="sel" hidden><i class="h" data-h="l"></i><i class="h" data-h="r"></i><i class="h" data-h="s"></i></div>
+    </div>
+  </div>
+</div>
+
+<section id="stylePanel" hidden aria-label="Output style">
+  <div class="spHead">
+    <h2>Output style</h2>
+    <p>Drag the graphic in the preview to move it. Pull a side handle to change the width, and the round corner handle to change the text size. OBS updates as you go.</p>
+    <button class="btn2 btnSmall" id="stReset">Reset style</button>
+    <button class="btnLive btnSmall" id="stDone">Done</button>
+  </div>
+  <div class="spGrid">
+    <div class="grp">
+      <h3>Layout</h3>
+      <div class="seg cards" data-k="layout">
+        <button data-v="bar"><span class="mini mini-bar"></span>Lower third</button>
+        <button data-v="box"><span class="mini mini-box"></span>Box</button>
+        <button data-v="sub"><span class="mini mini-sub"></span>Subtitle</button>
+        <button data-v="full"><span class="mini mini-full"></span>Full screen</button>
+      </div>
+      <h3>Color theme</h3>
+      <div class="themes" id="themes"></div>
+    </div>
+    <div class="grp">
+      <h3>Size and position</h3>
+      <label class="rng">Text size <input type="range" data-k="size" min="40" max="250" step="5"><output></output></label>
+      <label class="rng">Width <input type="range" data-k="w" min="20" max="100" step="1"><output></output></label>
+      <label class="rng">Up and down <input type="range" data-k="y" min="0" max="100" step="0.5"><output></output></label>
+      <label class="rng">Left and right <input type="range" data-k="x" min="0" max="100" step="0.5"><output></output></label>
+      <div class="row"><span>Place at</span><div class="seg" data-k="pos"><button data-v="top">Top</button><button data-v="middle">Middle</button><button data-v="bottom">Bottom</button></div></div>
+      <div class="row"><span>Line up</span><div class="seg" data-k="align"><button data-v="left">Left</button><button data-v="center">Center</button><button data-v="right">Right</button></div></div>
+    </div>
+    <div class="grp">
+      <h3>Text and color</h3>
+      <div class="row"><span>Font</span><select data-k="font" id="stFont"></select></div>
+      <div class="row"><span>Letters</span><div class="seg" data-k="upper"><button data-v="false">As typed</button><button data-v="true">ALL CAPS</button></div></div>
+      <div class="colours"><label>Text <input type="color" data-k="fg"></label><label>Accent <input type="color" data-k="accent"></label><label>Background <input type="color" data-k="bg"></label></div>
+      <label class="rng">Opacity <input type="range" data-k="bgAlpha" min="0" max="100" step="1"><output></output></label>
+    </div>
+    <div class="grp">
+      <h3>Finish</h3>
+      <div class="row"><span>Corners</span><div class="seg" data-k="corners"><button data-v="angled">Angled</button><button data-v="square">Square</button><button data-v="rounded">Rounded</button></div></div>
+      <div class="row"><span>Tag above</span><div class="seg" data-k="label"><button data-v="song">Song title</button><button data-v="custom">My text</button><button data-v="none">None</button></div></div>
+      <input type="text" data-k="labelText" placeholder="Tag text, for example your church name" maxlength="80">
+      <div class="row"><span>Animation</span><div class="seg" data-k="anim"><button data-v="wipe">Wipe</button><button data-v="fade">Fade</button><button data-v="cut">Cut</button></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="partsArea">
+  <div class="partsHead">
+    <span class="tip">CLICK A PART → IT APPEARS IN OBS / vMix · ← → NEXT / PREVIOUS · B = CLEAR</span>
+    <span class="songTools"><span id="songInfo"></span><span class="langBar" id="langBar"></span><button class="btn2 btnSmall" id="btnTranslate" style="display:none" title="Translate this song into another language">🌐 Translate</button><button class="btn2 btnSmall" id="btnEdit" style="display:none">✎ Edit</button></span>
+  </div>
+  <div id="partsList"></div>
+</div>
+
+<div class="footer">© 2026 M TECH INC · Lyrics broadcast system · Version 000.5</div>
+
+<dialog id="songDialog">
+  <h3 id="dlgHeading">ADD SONG</h3>
+  <div class="dlgRow">
+    <input type="text" id="dlgTitle" placeholder="Music Title">
+    <input type="text" id="dlgWriter" placeholder="Singer / Artist">
+  </div>
+  <textarea id="dlgLyrics" placeholder="Paste the lyrics here. Copying them from any lyrics website works."></textarea>
+  <label class="dlgSplit"><input type="checkbox" id="dlgSplit"> Split long verses into 2-line parts (best for lower thirds)</label>
+  <div class="dlgNote" id="dlgNote">A blank line starts a new part. Labels like [Chorus] are removed when splitting.</div>
+  <div class="dlgActions">
+    <button class="btnDanger" id="dlgDelete">Delete</button>
+    <span class="spacer"></span>
+    <button class="btn2" id="dlgCancel">Cancel</button>
+    <button class="btnLive" id="dlgSave">SAVE</button>
+  </div>
+</dialog>
+<dialog id="trDialog" aria-labelledby="trHeading">
+  <h3 id="trHeading">TRANSLATE SONG</h3>
+  <div class="trRow"><span>Song is in</span><select id="trFrom"></select></div>
+  <div class="trRow"><span>Translate to</span><input type="text" id="trSearch" placeholder="Type a language, for example French, Swahili or Italiano" autocomplete="off"></div>
+  <div id="trList" class="trList" role="listbox" aria-label="Languages"></div>
+  <div class="trRow"><span>On screen</span><div class="seg" id="trMode"><button data-v="tr" type="button">Translation only</button><button data-v="both" type="button">Both languages</button></div></div>
+  <div class="trStatus" id="trStatus" role="status"></div>
+  <div class="dlgActions">
+    <button class="btn2" id="trManual" type="button" title="Type the translation yourself">Type it myself</button>
+    <button class="btn2" id="trAgain" type="button" hidden>Translate again</button>
+    <span class="spacer"></span>
+    <button class="btn2" id="trCancel" type="button">Cancel</button>
+    <button class="btnLive" id="trGo" type="button">Translate</button>
+  </div>
+</dialog>
+<div id="toast" role="status"></div>
+
+<script>
+// ── each browser gets its own private room = its own OBS link, so users never control each other ──
+(function () {
+  function clean(r) { return String(r || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40); }
+  function newRoom() {
+    var a = 'abcdefghijklmnopqrstuvwxyz0123456789', out = '';
+    try {
+      while (out.length < 12) { var b = new Uint8Array(16); crypto.getRandomValues(b); for (var i = 0; i < b.length && out.length < 12; i++) if (b[i] < 252) out += a[b[i] % 36]; }
+    } catch (e) { while (out.length < 12) out += a[Math.floor(Math.random() * 36)]; }
+    return out;
+  }
+  var fromLink = clean(new URLSearchParams(location.search).get('room')); // opened from a CONTROL FROM PHONE link
+  var mine = '';
+  try { mine = clean(localStorage.getItem('mtech_room')); } catch (e) {}
+  if (!mine) { mine = newRoom(); try { localStorage.setItem('mtech_room', mine); } catch (e) {} }
+  window.MTECH_ROOM = fromLink || mine;
+  window.MTECH_JOINED = !!fromLink && fromLink !== mine;
+  window.MTECH_NEW_ROOM = newRoom;
+})();
+
+/* ── M TECH INC live link — shared by index.html (controller) and live.html (OBS/vMix output) ──
+   Every controller (each browser) gets its own private room, so every user has their own OBS link
+   (…/live.html?room=…). Lyrics travel over two free public MQTT brokers at once (EMQX, Eclipse);
+   ntfy.sh is a backup used only when no output is reachable over MQTT. Anyone who has a room's link
+   can send to it — NEW LINK in the controller replaces a link that was shared by mistake. */
+var MT = (function () {
+  var CFG = Object.assign({
+    home: 'https://ndumbestedrielnmbuaaws.github.io/M-TECH-INC-LYRICS/', // where the two pages are hosted (top of the repo)
+    brokers: [
+      { name: 'EMQX', url: 'wss://broker.emqx.io:8084/mqtt' },
+      { name: 'Eclipse', url: 'wss://mqtt.eclipseprojects.io:443/mqtt' }
+    ],
+    ntfy: 'https://ntfy.sh',
+    translateEmail: '', // optional contact email for MyMemory: raises its free limit from 5,000 to 50,000 characters a day
+    maxAgeMs: 6 * 60 * 60 * 1000 // ignore a lyric left on air more than 6 hours ago
+  }, window.MTECH_CONFIG || {});
+
+  function cleanRoom(r) { return String(r || '').replace(/[^A-Za-z0-9_-]/g, '').slice(0, 40); }
+  // The room comes from the link (?room=…) or, on the controller, from this browser's saved room.
+  var ROOM = cleanRoom(new URLSearchParams(location.search).get('room')) || cleanRoom(window.MTECH_ROOM);
+  var KEEPALIVE = 60; // seconds
+  var enc = new TextEncoder(), dec = new TextDecoder();
+
+  function str(s) { var b = enc.encode(s), out = [b.length >> 8, b.length & 255]; for (var i = 0; i < b.length; i++) out.push(b[i]); return out; }
+  function packet(head, body) {
+    var len = [], n = body.length;
+    do { var d = n % 128; n = Math.floor(n / 128); if (n > 0) d |= 128; len.push(d); } while (n > 0);
+    var out = new Uint8Array(1 + len.length + body.length);
+    out[0] = head; out.set(len, 1); out.set(body, 1 + len.length);
+    return out;
+  }
+
+  /* Minimal MQTT 3.1.1 client over WebSocket: QoS 0, retained publish, auto-reconnect. */
+  function Mqtt(broker, opts) {
+    this.name = broker.name; this.url = broker.url; this.opts = opts || {};
+    this.state = 'connecting'; this.ws = null; this.buf = new Uint8Array(0);
+    this.backoff = 1000; this.pid = 0; this.lastRx = 0; this.pending = false;
+    this.clientId = 'mt' + Math.random().toString(36).slice(2, 12) + Date.now().toString(36).slice(-4);
+    this.connect();
+  }
+  Mqtt.prototype.setState = function (s) {
+    if (this.state === s) return;
+    this.state = s;
+    if (this.opts.onState) this.opts.onState(this);
+  };
+  Mqtt.prototype.connect = function () {
+    var self = this, ws;
+    clearTimeout(this.retryT);
+    this.setState('connecting');
+    try { ws = new WebSocket(this.url, ['mqtt']); } catch (e) { this.retry(); return; }
+    this.ws = ws; ws.binaryType = 'arraybuffer'; this.buf = new Uint8Array(0);
+    var giveUp = setTimeout(function () { if (self.ws === ws && self.state !== 'up') self.kick(); }, 12000);
+    ws.onopen = function () {
+      self.lastRx = Date.now();
+      self.send(packet(0x10, str('MQTT').concat([4, 2, KEEPALIVE >> 8, KEEPALIVE & 255], str(self.clientId))));
+    };
+    ws.onmessage = function (ev) {
+      if (self.ws !== ws || !(ev.data instanceof ArrayBuffer)) return;
+      self.lastRx = Date.now();
+      self.feed(new Uint8Array(ev.data));
+    };
+    ws.onerror = function () {};
+    ws.onclose = function () {
+      clearTimeout(giveUp);
+      if (self.ws !== ws) return;
+      self.ws = null; clearInterval(self.pingT);
+      self.setState('down');
+      self.retry();
+    };
+  };
+  Mqtt.prototype.retry = function () {
+    var self = this, wait = this.backoff + Math.floor(Math.random() * 400);
+    this.backoff = Math.min(this.backoff * 2, 30000);
+    clearTimeout(this.retryT);
+    this.retryT = setTimeout(function () { self.connect(); }, wait);
+  };
+  Mqtt.prototype.send = function (bytes) {
+    try { if (this.ws && this.ws.readyState === 1) { this.ws.send(bytes); return true; } } catch (e) {}
+    return false;
+  };
+  Mqtt.prototype.kick = function () { try { if (this.ws) this.ws.close(); } catch (e) {} };
+  Mqtt.prototype.publish = function (topic, text, retain) {
+    if (this.state !== 'up') return false;
+    return this.send(packet(retain ? 0x31 : 0x30, str(topic).concat(Array.from(enc.encode(text)))));
+  };
+  Mqtt.prototype.ping = function () {
+    if (this.state !== 'up') return;
+    if (Date.now() - this.lastRx > KEEPALIVE * 1500) { this.kick(); return; } // connection went silent
+    this.send(new Uint8Array([0xC0, 0]));
+  };
+  Mqtt.prototype.feed = function (chunk) {
+    var b = chunk;
+    if (this.buf.length) { b = new Uint8Array(this.buf.length + chunk.length); b.set(this.buf); b.set(chunk, this.buf.length); }
+    var off = 0;
+    while (b.length - off >= 2) {
+      var mul = 1, len = 0, i = off + 1, byte, whole = true;
+      do {
+        if (i >= b.length) { whole = false; break; }
+        byte = b[i++]; len += (byte & 127) * mul; mul *= 128;
+        if (mul > 268435456) { this.buf = new Uint8Array(0); this.kick(); return; }
+      } while (byte & 128);
+      if (!whole || b.length < i + len) break;
+      this.handle(b[off] >> 4, b[off] & 15, b.subarray(i, i + len));
+      off = i + len;
+    }
+    this.buf = off < b.length ? b.slice(off) : new Uint8Array(0);
+  };
+  Mqtt.prototype.handle = function (type, flags, body) {
+    var self = this;
+    if (type === 2) { // CONNACK
+      if (body.length < 2 || body[1] !== 0) { this.kick(); return; }
+      this.backoff = 1000;
+      this.setState('up');
+      var subs = this.opts.subs || [];
+      if (subs.length) {
+        this.pid = this.pid % 65535 + 1;
+        var sb = [this.pid >> 8, this.pid & 255];
+        subs.forEach(function (t) { sb = sb.concat(str(t), [0]); });
+        this.send(packet(0x82, sb));
+      }
+      clearInterval(this.pingT);
+      this.pingT = setInterval(function () { self.ping(); }, KEEPALIVE * 1000 / 3);
+      if (this.opts.onUp) this.opts.onUp(this);
+    } else if (type === 3) { // PUBLISH
+      if (body.length < 2) return;
+      var qos = (flags >> 1) & 3, p = 2 + ((body[0] << 8) | body[1]);
+      if (body.length < p) return;
+      var topic = dec.decode(body.subarray(2, p));
+      if (qos > 0) { this.send(new Uint8Array([qos === 1 ? 0x40 : 0x50, 2, body[p], body[p + 1]])); p += 2; }
+      if (this.opts.onMessage) this.opts.onMessage(this, topic, dec.decode(body.subarray(p)));
+    } else if (type === 6 && body.length >= 2) { // PUBREL -> PUBCOMP
+      this.send(new Uint8Array([0x70, 2, body[0], body[1]]));
+    }
+  };
+
+  /* Output style: one shared description of the on-screen graphic, sent on its own retained channel. */
+  var FONTS = { 'Barlow Semi Condensed': 700, 'Montserrat': 800, 'Poppins': 700, 'Lexend': 700, 'Oswald': 600, 'Bebas Neue': 400, 'Playfair Display': 700, 'System': 800 };
+  var STYLE_DEFAULT = {
+    layout: 'bar', corners: 'angled', pos: 'bottom', align: 'center', x: 50, y: 93.5, w: 84, size: 1,
+    font: 'Barlow Semi Condensed', fg: '#ffffff', accent: '#23c3e7', bg: '#0b1a2d', bgAlpha: 0.86,
+    upper: false, label: 'song', labelText: '', anim: 'wipe'
+  };
+  function cleanStyle(s) {
+    s = s && typeof s === 'object' ? s : {};
+    var d = STYLE_DEFAULT, o = {};
+    function pick(k, list) { o[k] = list.indexOf(s[k]) > -1 ? s[k] : d[k]; }
+    function num(k, lo, hi) { var v = parseFloat(s[k]); o[k] = isFinite(v) ? Math.min(hi, Math.max(lo, v)) : d[k]; }
+    function col(k) { o[k] = /^#[0-9a-fA-F]{6}$/.test(s[k] || '') ? String(s[k]).toLowerCase() : d[k]; }
+    pick('layout', ['bar', 'box', 'sub', 'full']); pick('corners', ['angled', 'square', 'rounded']);
+    pick('pos', ['bottom', 'middle', 'top']); pick('align', ['left', 'center', 'right']);
+    num('x', 0, 100); num('y', 0, 100); num('w', 20, 100); num('size', 0.4, 2.5);
+    o.font = Object.prototype.hasOwnProperty.call(FONTS, s.font) ? s.font : d.font;
+    col('fg'); col('accent'); col('bg'); num('bgAlpha', 0, 1);
+    o.upper = s.upper === true;
+    pick('label', ['song', 'custom', 'none']); o.labelText = String(s.labelText || '').slice(0, 80);
+    pick('anim', ['wipe', 'fade', 'cut']);
+    return o;
+  }
+
+  function parseLyric(raw) {
+    try {
+      var m = JSON.parse(raw);
+      if (m && typeof m.seq === 'number' && typeof m.text === 'string')
+        return { seq: m.seq, text: m.text, sub: typeof m.sub === 'string' ? m.sub.slice(0, 4000) : '', // sub = translation shown under the lyric
+          title: typeof m.title === 'string' ? m.title.slice(0, 120) : '', artist: typeof m.artist === 'string' ? m.artist.slice(0, 120) : '' };
+    } catch (e) {}
+    return null;
+  }
+  function parseStyle(raw) {
+    try { var m = JSON.parse(raw); if (m && typeof m.seq === 'number' && m.style && typeof m.style === 'object') return { seq: m.seq, style: cleanStyle(m.style) }; } catch (e) {}
+    return null;
+  }
+
+  var NTFY = String(CFG.ntfy).replace(/\/+$/, '');
+  return {
+    VERSION: '000.5',
+    CFG: CFG, ROOM: ROOM, cleanRoom: cleanRoom, Mqtt: Mqtt,
+    FONTS: FONTS, STYLE_DEFAULT: STYLE_DEFAULT, cleanStyle: cleanStyle, parseLyric: parseLyric, parseStyle: parseStyle,
+    T_LIVE: 'mtech-inc/lyrics/' + ROOM + '/live',
+    T_STYLE: 'mtech-inc/lyrics/' + ROOM + '/style',
+    T_PRES: 'mtech-inc/lyrics/' + ROOM + '/presence',
+    NTFY: NTFY, N_LIVE: 'mtech-inc-' + ROOM, N_STYLE: 'mtech-inc-' + ROOM + '-s',
+    NTFY_URL: NTFY + '/mtech-inc-' + ROOM, NTFY_STYLE_URL: NTFY + '/mtech-inc-' + ROOM + '-s',
+    fresh: function (m) { return Date.now() - m.seq <= CFG.maxAgeMs; }
+  };
+})();
+
+const STORE_KEY = 'mtech_inc_library';
+const DEMO_SONGS = [
+ {title:"Amazing Grace",writer:"John Newton",lyrics:"Amazing Grace\nHow sweet the sound\n\nThat saved a wretch like me\n\nI once was lost\nBut now am found\n\nWas blind but now I see"},
+ {title:"Holy, Holy, Holy",writer:"Reginald Heber",lyrics:"Holy, holy, holy!\nLord God Almighty!\n\nEarly in the morning\nOur song shall rise to Thee\n\nHoly, holy, holy!\nMerciful and mighty!\n\nGod in three Persons,\nBlessed Trinity!"}
+];
+
+function $(id){ return document.getElementById(id); }
+function str(v){ return v==null?'':String(v); }
+
+// ── library ──
+function norm(t){ return str(t).replace(/\r\n?/g,'\n').replace(/[ \t]+$/gm,'').replace(/\n{3,}/g,'\n\n').trim(); }
+const LANG_CODE=/^[a-z]{2,3}(-[A-Za-z]{2,4})?$/;
+var nameRe=null;
+function customName(s){ // a language people name and type themselves, e.g. "Duala" or "Pidgin English"
+ if(!nameRe){ try{ nameRe=new RegExp('[^\\p{L}\\p{M} \'’().-]+','gu'); }catch(e){ nameRe=/[^A-Za-zÀ-ɏ '’().-]+/g; } }
+ s=str(s).replace(nameRe,' ').replace(/\s+/g,' ').trim().slice(0,30).trim();
+ return s.length>1?s.charAt(0).toUpperCase()+s.slice(1):'';
+}
+function isCustomLang(k){ return typeof k==='string'&&!!k&&!LANG_CODE.test(k)&&customName(k)===k; }
+function cleanSong(s){
+ if(!s||typeof s!=='object') return null; const t=str(s.title).trim(),l=norm(s.lyrics); if(!t||!l) return null;
+ const o={title:t,writer:str(s.writer).trim(),lyrics:l};
+ if(s.tr&&typeof s.tr==='object'){ const tr={}; Object.keys(s.tr).slice(0,30).forEach(k=>{ if(LANG_CODE.test(k)||isCustomLang(k)){ const v=norm(s.tr[k]); if(v) tr[k]=v; } }); if(Object.keys(tr).length) o.tr=tr; } // saved translations
+ if(LANG_CODE.test(s.srcLang||'')) o.srcLang=s.srcLang;
+ return o;
+}
+function cleanList(a){ return Array.isArray(a)?a.map(cleanSong).filter(Boolean):[]; }
+function songKey(s){ return (s.title+'|'+s.writer).toLowerCase(); }
+function parts(lyrics){ return norm(lyrics).split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean); }
+function loadLib(){ try{ const s=cleanList(JSON.parse(localStorage.getItem(STORE_KEY)||'[]')); if(s.length) return s; }catch(e){} return DEMO_SONGS.map(s=>({...s})); }
+function saveLib(){ try{ localStorage.setItem(STORE_KEY,JSON.stringify(lib)); }catch(e){ toast('Storage blocked'); } refreshLists(); }
+
+let lib=loadLib(), cur=null, slides=[], subs=[], idx=-1, editing=null, toastT=null, busy=false, foldRe=null, onAirText='';
+const OVH='https://api.lyrics.ovh';
+
+// ── this user's permanent links ──
+// Served from GitHub Pages: links point next to this page. Opened as a downloaded file: use the hosted pages.
+const appBase = (() => { try { if (/^https?:$/.test(location.protocol)) return new URL('./', location.href); } catch (e) {} return new URL(MT.CFG.home); })();
+const outUrl = new URL('live.html', appBase); outUrl.searchParams.set('room', MT.ROOM);
+const ctlUrl = new URL(appBase.href); ctlUrl.searchParams.set('room', MT.ROOM);
+$('liveUrlBox').value = outUrl.href;
+const showLinkEnd = () => { const b = $('liveUrlBox'); if (document.activeElement !== b) b.scrollLeft = b.scrollWidth; }; // keep the room code visible
+requestAnimationFrame(showLinkEnd); window.addEventListener('resize', showLinkEnd);
+if (window.MTECH_JOINED) { $('linkLabel').textContent = 'SHARED OBS / vMix LINK'; $('btnNewRoom').textContent = 'USE MY OWN LINK'; }
+
+function copyText(text, btn, label, okMsg){
+  const flash = ok => {
+    btn.textContent = ok ? 'COPIED ✓' : label; setTimeout(() => { btn.textContent = label; }, 1800);
+    if (ok && okMsg) toast(okMsg, 6000);
+    if (!ok) window.prompt('Copy this link:', text);
+  };
+  const fallback = () => {
+    const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0';
+    document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (err) {} ta.remove(); flash(ok);
+  };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(() => flash(true), fallback); else fallback();
+}
+$('liveUrlBox').addEventListener('click', e => e.target.select());
+$('btnCopyUrl').addEventListener('click', e => copyText(outUrl.href, e.currentTarget, 'COPY', 'OBS link copied. Paste it once into an OBS Browser Source or vMix Web Browser input.'));
+$('btnTest').addEventListener('click', () => { const u = new URL(outUrl.href); u.searchParams.set('debug', '1'); window.open(u.href, '_blank'); });
+$('btnPhone').addEventListener('click', e => copyText(ctlUrl.href, e.currentTarget, 'CONTROL FROM PHONE', 'Control link copied. Open it on your phone to control this same screen. Anyone with this link can change your lyrics.'));
+$('btnNewRoom').addEventListener('click', e => {
+  const b = e.currentTarget;
+  if (window.MTECH_JOINED) { location.href = appBase.href; return; } // leave the shared screen, back to this browser's own link
+  if (!b.classList.contains('armed')) {
+    b.classList.add('armed'); b.textContent = 'TAP AGAIN: OBS LINK WILL CHANGE';
+    clearTimeout(b._t); b._t = setTimeout(() => { b.classList.remove('armed'); b.textContent = 'NEW LINK'; }, 4000);
+    return;
+  }
+  sendLive({ text: '', title: '', artist: '' }); // blank whatever the old link is showing
+  try { localStorage.setItem('mtech_room', window.MTECH_NEW_ROOM()); } catch (err) {}
+  setTimeout(() => { location.href = appBase.href; }, 400);
+});
+
+// ── live link: send lyrics and style, watch which outputs are connected ──
+let knownSeq = 0, lastSent = null, ntfyState = 'idle', clients = [], refreshTold = false;
+let styleSeq = 0, styleHeard = false, lastStyleRaw = '', autoStyleT = 0;
+const outputs = {};
+
+clients = MT.CFG.brokers.map(b => new MT.Mqtt(b, {
+  subs: [MT.T_LIVE, MT.T_STYLE, MT.T_PRES],
+  onMessage: (c, topic, text) => {
+    if (topic === MT.T_LIVE) onLiveEcho(text);
+    else if (topic === MT.T_STYLE) onStyleEcho(text);
+    else if (topic === MT.T_PRES) onPresence(text);
+  },
+  onUp: c => {
+    if (c.pending && lastSent) { c.pending = false; c.publish(MT.T_LIVE, lastSent.raw, true); }
+    if (c.pendingStyle && lastStyleRaw) { c.pendingStyle = false; c.publish(MT.T_STYLE, lastStyleRaw, true); }
+    c.publish(MT.T_PRES, JSON.stringify({ q: 1 }), false); // ask outputs to report in
+    // A brand-new room has no style yet: give it this browser's saved style.
+    if (!styleHeard && !window.MTECH_JOINED && !autoStyleT) autoStyleT = setTimeout(() => { if (!styleHeard) publishStyle(); }, 4000);
+    refreshStatus();
+  },
+  onState: () => refreshStatus()
+}));
+
+function onLiveEcho(raw){
+  const m = MT.parseLyric(raw);
+  if (!m || m.seq <= knownSeq) return;
+  knownSeq = m.seq;
+  if (MT.fresh(m)) setOnAir(m); // what was already on air when this page opened, or another controller
+}
+function onStyleEcho(raw){
+  const m = MT.parseStyle(raw);
+  if (!m || m.seq <= styleSeq) return;
+  styleSeq = m.seq; styleHeard = true;
+  if (drag) return; // this browser is mid-drag; its own value wins
+  style = m.style; saveStyleLocal(); syncStyleUI(); postPreview('style');
+}
+function onPresence(raw){
+  let m; try { m = JSON.parse(raw); } catch (e) { return; }
+  if (!m || m.q || typeof m.id !== 'string') return;
+  outputs[m.id] = { at: Date.now(), kind: m.kind === 'obs' ? 'obs' : 'web', seq: typeof m.seq === 'number' ? m.seq : 0, v: typeof m.v === 'string' ? m.v.slice(0, 20) : '' };
+  refreshStatus();
+}
+// Compare versions like 000.3 / 000.10; outputs from before 000.3 send no version at all.
+function cmpVersion(a, b){
+  const pa = String(a || '0').split('.').map(Number), pb = String(b || '0').split('.').map(Number);
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++) { const d = (pa[i] || 0) - (pb[i] || 0); if (d) return d < 0 ? -1 : 1; }
+  return 0;
+}
+function onlineOutputs(){
+  const now = Date.now(); let n = 0, obs = 0, acked = false, older = '', newer = '';
+  Object.keys(outputs).forEach(id => {
+    const o = outputs[id];
+    if (now - o.at > 300000) { delete outputs[id]; return; }
+    if (now - o.at < 25000) {
+      n++; if (o.kind === 'obs') obs++; if (lastSent && o.seq >= lastSent.seq) acked = true;
+      const c = cmpVersion(o.v, MT.VERSION);
+      if (c < 0) older = o.v || 'an older version'; else if (c > 0) newer = o.v;
+    }
+  });
+  return { n, obs, acked, older, newer };
+}
+
+function sendLive(l){
+  const seq = Math.max(Date.now(), knownSeq + 1);
+  knownSeq = seq;
+  const raw = JSON.stringify({ seq, text: l.text, sub: l.sub || '', title: l.title || '', artist: l.artist || '' });
+  lastSent = { seq, text: l.text, raw, at: Date.now(), mqtt: 0, backup: false };
+  clients.forEach(c => { if (c.publish(MT.T_LIVE, raw, true)) { lastSent.mqtt++; c.pending = false; } else c.pending = true; });
+  // Backup (ntfy.sh, 250 free messages per 12 h) only when no output is reachable over MQTT.
+  if (!lastSent.mqtt || !onlineOutputs().n) { lastSent.backup = true; backupSend(MT.NTFY_URL, raw); }
+  refreshStatus();
+}
+function publishStyle(){
+  const seq = Math.max(Date.now(), styleSeq + 1);
+  styleSeq = seq; lastPubAt = Date.now();
+  const raw = lastStyleRaw = JSON.stringify({ seq, style });
+  let n = 0;
+  clients.forEach(c => { if (c.publish(MT.T_STYLE, raw, true)) { n++; c.pendingStyle = false; } else c.pendingStyle = true; });
+  if (!n || !onlineOutputs().n) backupSend(MT.NTFY_STYLE_URL, raw);
+}
+let pubT = 0, lastPubAt = 0;
+function schedulePublish(gap){ // at most one style message every `gap` ms while sliders or drags are moving
+  clearTimeout(pubT);
+  const wait = Math.max(0, gap - (Date.now() - lastPubAt));
+  if (!wait) publishStyle(); else pubT = setTimeout(publishStyle, wait);
+}
+
+const bk = {};
+function backupSend(url, raw){
+  const q = bk[url] || (bk[url] = { busy: false, next: null, last: 0 });
+  q.next = raw;
+  if (q.busy) return;
+  q.busy = true;
+  setTimeout(() => {
+    const body = q.next; q.next = null; q.last = Date.now();
+    fetch(url, { method: 'POST', body, cache: 'no-store' })
+      .then(r => { ntfyState = r.ok ? 'ok' : (r.status === 429 ? 'limit' : 'err'); })
+      .catch(() => { ntfyState = 'err'; })
+      .then(() => { q.busy = false; refreshStatus(); if (q.next) backupSend(url, q.next); });
+  }, Math.max(0, 400 - (Date.now() - q.last)));
+}
+
+function setChip(el, cls, text, title){ el.className = 'chip ' + cls; el.querySelector('b').textContent = text; el.title = title || ''; }
+function refreshStatus(){
+  const word = s => s === 'up' ? 'connected' : s === 'down' ? 'retrying' : 'connecting';
+  const up = clients.filter(c => c.state === 'up').length;
+  const detail = clients.map(c => c.name + ': ' + word(c.state)).join(' · ') + ' · Backup: ' + ({ idle: 'standby', ok: 'working', limit: 'free limit reached', err: 'unreachable' })[ntfyState] + ' · Room: ' + MT.ROOM;
+  if (up) setChip($('chipLink'), 'ok', 'LINK OK', detail);
+  else if (clients.some(c => c.state === 'connecting') && ntfyState === 'idle') setChip($('chipLink'), 'warn', 'CONNECTING…', detail);
+  else if (ntfyState === 'limit') setChip($('chipLink'), 'bad', 'BACKUP LIMIT REACHED', detail);
+  else if (ntfyState === 'err') setChip($('chipLink'), 'bad', 'OFFLINE · RETRYING', detail);
+  else setChip($('chipLink'), 'warn', 'BACKUP LINK', detail);
+
+  const o = onlineOutputs();
+  const who = o.obs ? 'OBS' : 'OUTPUT';
+  if (o.n && o.older) {
+    setChip($('chipOut'), 'warn', who + ' NEEDS REFRESH', 'OBS/vMix is still running ' + (o.older.startsWith('an') ? o.older : 'version ' + o.older) + '; this page is version ' + MT.VERSION + '. In OBS, open the Browser Source properties and click "Refresh cache of current page".');
+    if (!refreshTold) { refreshTold = true; toast(who + ' is running an older version. In OBS, open the Browser Source properties and click "Refresh cache of current page".', 9000); }
+  }
+  else if (o.n && o.newer) setChip($('chipOut'), 'warn', 'REFRESH THIS PAGE', 'OBS/vMix is on version ' + o.newer + ' but this page is version ' + MT.VERSION + '. Press Ctrl+F5 to load the latest controller.');
+  else if (o.n) setChip($('chipOut'), 'ok', who + ' CONNECTED' + (o.n > 1 ? ' (' + o.n + ')' : ''), o.n + ' output(s) showing this room, version ' + MT.VERSION);
+  else setChip($('chipOut'), '', 'NO OUTPUT YET', 'Paste the link into an OBS Browser Source or a vMix Web Browser input.');
+
+  const s = $('airStatus');
+  let t = '', cls = '';
+  if (lastSent) {
+    if (o.acked) { t = '✓ ON SCREEN'; cls = 'ok'; }
+    else if (Date.now() - lastSent.at < 4000 && (o.n || (bk[MT.NTFY_URL] && bk[MT.NTFY_URL].busy))) { t = 'SENDING…'; cls = 'warn'; }
+    else if (lastSent.backup && ntfyState === 'ok') { t = 'SENT VIA BACKUP'; cls = 'warn'; } // outputs can't confirm over the backup
+    else if (o.n) { t = '⚠ NOT CONFIRMED'; cls = 'bad'; }
+    else if (lastSent.backup && (ntfyState === 'limit' || ntfyState === 'err') && !lastSent.mqtt) { t = '⚠ NOT SENT'; cls = 'bad'; }
+    else { t = 'SENT · NO OUTPUT CONNECTED'; cls = 'warn'; }
+  }
+  s.textContent = t; s.className = cls;
+}
+setInterval(refreshStatus, 1000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) clients.forEach(c => c.ping()); });
+
+// ── on air ──
+let onAir = { text: '', sub: '', title: '', artist: '' };
+function setOnAir(l){
+  onAir = { text: l.text || '', sub: l.text ? (l.sub || '') : '', title: l.title || '', artist: l.artist || '' };
+  onAirText = onAir.text;
+  postPreview('lyric');
+  markRows();
+}
+function markRows(){
+  document.querySelectorAll('.partRow').forEach((el, i) => {
+    const on = onAirText !== '' && slides[i] === onAirText && (subs[i] || '') === onAir.sub;
+    el.classList.toggle('active', on);
+    const b = el.querySelector('.goBtn');
+    b.classList.toggle('active', on); b.textContent = on ? '✓ ON AIR' : '▶ GO LIVE';
+  });
+}
+function goLive(i){
+  if (!cur || !slides.length) return;
+  i = Math.min(Math.max(i | 0, 0), slides.length - 1); idx = i;
+  setOnAir({ text: slides[i], sub: subs[i] || '', title: cur.title, artist: cur.writer });
+  sendLive(onAir);
+  const row = $('row-' + i); if (row) row.scrollIntoView({ block: 'nearest' });
+}
+function clearScreen(){ setOnAir({ text: '' }); sendLive(onAir); }
+$('btnClear').addEventListener('mousedown', e => e.preventDefault());
+$('btnClear').addEventListener('click', clearScreen);
+
+// ── output style: saved per browser, shared through the room so OBS and every controller agree ──
+const STYLE_KEY = 'mtech_style';
+const THEMES = [
+  { name: 'M TECH', bg: '#0b1a2d', accent: '#23c3e7', fg: '#ffffff', bgAlpha: 0.86 },
+  { name: 'Gold', bg: '#101c38', accent: '#e8b931', fg: '#ffffff', bgAlpha: 0.88 },
+  { name: 'Crimson', bg: '#161616', accent: '#e23d4b', fg: '#ffffff', bgAlpha: 0.86 },
+  { name: 'White', bg: '#ffffff', accent: '#1f5eff', fg: '#101828', bgAlpha: 0.94 },
+  { name: 'Royal', bg: '#26103f', accent: '#f2c14e', fg: '#ffffff', bgAlpha: 0.88 },
+  { name: 'Emerald', bg: '#06261d', accent: '#34d39e', fg: '#ffffff', bgAlpha: 0.88 }
+];
+let style = (() => { if (!window.MTECH_JOINED) { try { return MT.cleanStyle(JSON.parse(localStorage.getItem(STYLE_KEY) || '{}')); } catch (e) {} } return MT.cleanStyle({}); })();
+let styleOpen = false, drag = null, pvReady = false, pvRect = null, pvScale = 1;
+function saveStyleLocal(){ if (window.MTECH_JOINED) return; try { localStorage.setItem(STYLE_KEY, JSON.stringify(style)); } catch (e) {} }
+
+// mode: 'commit' (buttons) sends now, 'live' (sliders, colours) and 'drag' send at most every 120 ms
+function updateStyle(s, mode){
+  style = MT.cleanStyle(s);
+  saveStyleLocal();
+  syncStyleUI();
+  postPreview('style');
+  schedulePublish(mode === 'commit' ? 0 : 120);
+}
+
+const sp = $('stylePanel');
+const fmt = { size: v => Math.round(v * 100) + '%', w: v => Math.round(v) + '%', y: v => Math.round(v) + '%', x: v => Math.round(v) + '%', bgAlpha: v => Math.round(v * 100) + '%' };
+function syncStyleUI(){
+  sp.querySelectorAll('.seg').forEach(seg => seg.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(String(style[seg.dataset.k]) === b.dataset.v))));
+  sp.querySelectorAll('input[type=range]').forEach(r => {
+    const k = r.dataset.k, v = style[k];
+    if (document.activeElement !== r) r.value = (k === 'size' || k === 'bgAlpha') ? Math.round(v * 100) : v;
+    r.nextElementSibling.textContent = fmt[k](v);
+  });
+  sp.querySelectorAll('input[type=color]').forEach(c => { c.value = style[c.dataset.k]; });
+  const lt = sp.querySelector('[data-k=labelText]');
+  if (document.activeElement !== lt) lt.value = style.labelText;
+  lt.hidden = style.label !== 'custom';
+  $('stFont').value = style.font;
+  $('themes').querySelectorAll('button').forEach((b, i) => { const t = THEMES[i]; b.setAttribute('aria-pressed', String(t.bg === style.bg && t.accent === style.accent && t.fg === style.fg)); });
+  placeSel();
+}
+function buildStyleUI(){
+  Object.keys(MT.FONTS).forEach(f => { const o = document.createElement('option'); o.value = f; o.textContent = f === 'System' ? 'System font (works offline)' : f; $('stFont').appendChild(o); });
+  THEMES.forEach(t => {
+    const b = document.createElement('button'); b.type = 'button';
+    const sw = document.createElement('span'); sw.className = 'sw'; sw.style.background = 'linear-gradient(135deg,' + t.bg + ' 50%,' + t.accent + ' 50%)';
+    b.appendChild(sw); b.appendChild(document.createTextNode(t.name));
+    b.addEventListener('click', () => updateStyle(Object.assign({}, style, { bg: t.bg, accent: t.accent, fg: t.fg, bgAlpha: t.bgAlpha }), 'commit'));
+    $('themes').appendChild(b);
+  });
+  sp.querySelectorAll('.seg').forEach(seg => seg.addEventListener('click', e => {
+    const b = e.target.closest('button[data-v]'); if (!b) return;
+    const k = seg.dataset.k; const s = Object.assign({}, style);
+    s[k] = k === 'upper' ? b.dataset.v === 'true' : b.dataset.v;
+    if (k === 'pos') s.y = { top: 6.5, middle: 50, bottom: 93.5 }[s.pos];       // snap to the safe area
+    if (k === 'align') s.x = { left: 8, center: 50, right: 92 }[s.align];
+    updateStyle(s, 'commit');
+  }));
+  sp.querySelectorAll('input[type=range]').forEach(r => r.addEventListener('input', () => {
+    const k = r.dataset.k; let v = parseFloat(r.value); if (k === 'size' || k === 'bgAlpha') v /= 100;
+    updateStyle(Object.assign({}, style, { [k]: v }), 'live');
+  }));
+  sp.querySelectorAll('input[type=color]').forEach(c => c.addEventListener('input', () => updateStyle(Object.assign({}, style, { [c.dataset.k]: c.value }), 'live')));
+  $('stFont').addEventListener('change', e => updateStyle(Object.assign({}, style, { font: e.target.value }), 'commit'));
+  sp.querySelector('[data-k=labelText]').addEventListener('input', e => updateStyle(Object.assign({}, style, { labelText: e.target.value }), 'live'));
+  $('stReset').addEventListener('click', () => updateStyle(MT.cleanStyle({}), 'commit'));
+  $('stDone').addEventListener('click', () => toggleStyle(false));
+  $('btnStyle').addEventListener('click', () => toggleStyle(!styleOpen));
+}
+function toggleStyle(open){
+  styleOpen = open;
+  sp.hidden = !open;
+  $('btnStyle').setAttribute('aria-expanded', String(open));
+  postPreview('lyric');
+  placeSel();
+}
+
+// ── 16:9 preview: the real output page, fed directly so it matches OBS exactly ──
+const pv = $('pv');
+const pvSrc = new URL('live.html', appBase); pvSrc.searchParams.set('embed', '1');
+pv.src = pvSrc.href;
+function previewLyric(){
+  if (onAir.text) return onAir;
+  if (!styleOpen) return { text: '' };
+  return cur && slides.length ? { text: slides[0], title: cur.title, artist: cur.writer }
+    : { text: 'Amazing grace, how sweet the sound\nThat saved a wretch like me', title: 'Amazing Grace', artist: 'John Newton' };
+}
+function postPreview(kind){
+  const sample = !onAir.text && styleOpen;
+  $('pvNote').hidden = !sample;
+  $('emptyHint').hidden = !!onAir.text || styleOpen;
+  if (!pvReady || !pv.contentWindow) return;
+  if (kind !== 'lyric') pv.contentWindow.postMessage({ mt: 'style', style, dragging: !!drag }, '*');
+  if (kind !== 'style') pv.contentWindow.postMessage({ mt: 'lyric', lyric: previewLyric() }, '*');
+}
+window.addEventListener('message', e => {
+  if (e.source !== pv.contentWindow) return;
+  const d = e.data || {};
+  if (d.mt === 'ready') { pvReady = true; postPreview('all'); }
+  else if (d.mt === 'rect') { pvRect = d; placeSel(); }
+});
+function layoutPreview(){
+  const wrap = $('pvWrap'), fr = $('pvFrame');
+  const W = wrap.clientWidth, H = window.innerWidth <= 700 ? W * 9 / 16 : wrap.clientHeight;
+  let fw = W, fh = W * 9 / 16;
+  if (fh > H) { fh = H; fw = H * 16 / 9; }
+  fr.style.width = Math.floor(fw) + 'px'; fr.style.height = Math.floor(fh) + 'px';
+  pvScale = Math.floor(fw) / 1920;
+  pv.style.transform = 'scale(' + pvScale + ')';
+  placeSel();
+}
+
+// ── drag the graphic in the preview to move it; side handles = width, round handle = text size ──
+const sel = $('sel');
+function placeSel(){
+  const show = styleOpen && pvRect && pvRect.on && pvRect.h > 0;
+  sel.hidden = !show;
+  if (!show) return;
+  sel.style.left = pvRect.x * pvScale + 'px'; sel.style.top = pvRect.y * pvScale + 'px';
+  sel.style.width = pvRect.w * pvScale + 'px'; sel.style.height = pvRect.h * pvScale + 'px';
+  sel.classList.toggle('down', style.pos !== 'bottom');
+  sel.classList.toggle('fixed', style.layout === 'full');
+}
+sel.addEventListener('pointerdown', e => {
+  if (e.button > 0) return;
+  const h = e.target.dataset.h || 'm';
+  if (h === 'm' && style.layout === 'full') return;
+  drag = { h, x0: e.clientX, y0: e.clientY, s0: Object.assign({}, style), hPct: pvRect.h / 1080 * 100 };
+  sel.setPointerCapture(e.pointerId);
+  e.preventDefault();
+});
+sel.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const dx = (e.clientX - drag.x0) / pvScale / 1920 * 100, dy = (e.clientY - drag.y0) / pvScale / 1080 * 100;
+  const s0 = drag.s0, s = Object.assign({}, s0);
+  if (drag.h === 'm') { s.x = s0.x + dx; s.y = s0.y + dy; }
+  else if (drag.h === 'l' || drag.h === 'r') {
+    const right = drag.h === 'r';
+    if (s0.align === 'center') s.w = s0.w + (right ? 2 * dx : -2 * dx);
+    else if ((s0.align === 'left') === right) s.w = s0.w + (right ? dx : -dx);       // free edge
+    else { s.x = s0.x + dx; s.w = s0.w + (right ? dx : -dx); }                        // anchored edge moves too
+  } else {
+    const grow = s0.pos === 'bottom' ? -dy : dy;
+    s.size = s0.size * Math.max(0.2, (drag.hPct + grow) / drag.hPct);
+  }
+  updateStyle(s, 'drag');
+});
+function endDrag(){ if (!drag) return; drag = null; updateStyle(style, 'commit'); }
+sel.addEventListener('pointerup', endDrag);
+sel.addEventListener('pointercancel', endDrag);
+
+// ── control panel ──
+function refreshLists(){
+ const fill=(id,vals)=>{ const dl=$(id); dl.textContent=''; [...new Set(vals.filter(Boolean))].sort((a,b)=>a.localeCompare(b)).forEach(v=>{ const o=document.createElement('option');o.value=v;dl.appendChild(o); }); };
+ fill('titleList',lib.map(s=>s.title)); fill('writerList',lib.map(s=>s.writer));
+}
+
+// ── song search: your library first, then two free lyrics sources (LRCLIB and lyrics.ovh) ──
+// SEARCH opens a song straight away when the title matches one in your library; otherwise it lists
+// matches from the library and from online so you can pick. Fetch Online always lists online matches.
+function search(force){
+ const t=$('title').value.trim(), w=$('writer').value.trim();
+ if(!t&&!w){ toast('Type a song title, a line from the song, or the singer'); $('title').focus(); return; }
+ hideToast();
+ const local=searchLibrary(t,w), top=local[0];
+ if(!force&&top&&(top.score===100||(top.score===80&&local.filter(r=>r.score>=80).length===1))){ closeResults(); loadSong(top.song); return; }
+ showResults(t,w,local);
+}
+
+function loadSong(song){
+ cur=song; buildSlides(); idx=onAirText?slides.indexOf(onAirText):-1;
+ $('songInfo').textContent=song.title+(song.writer?' - '+song.writer:'');
+ $('btnEdit').style.display='';
+ renderRows();
+ renderLangBar();
+ if(styleOpen&&!onAir.text) postPreview('lyric'); // style the sample with this song
+}
+function renderRows(){
+ const list=$('partsList'); list.textContent='';
+ slides.forEach((part,i)=>{
+  const row=document.createElement('div'); row.className='partRow'; row.id='row-'+i;
+  const badge=document.createElement('span'); badge.className='badge'; badge.textContent='PART '+(i+1);
+  const txt=document.createElement('div'); txt.className='partText'; txt.dir='auto'; txt.textContent=part;
+  if(subs[i]){ const s=document.createElement('span'); s.className='sub'; s.dir='auto'; s.textContent=subs[i]; txt.appendChild(s); }
+  const btn=document.createElement('button'); btn.className='goBtn'; btn.textContent='▶ GO LIVE'; btn.tabIndex=-1;
+  btn.addEventListener('mousedown',e=>e.preventDefault()); // keep keyboard shortcuts working after a click
+  row.appendChild(badge); row.appendChild(txt); row.appendChild(btn);
+  row.addEventListener('click',()=>goLive(i));
+  list.appendChild(row);
+ });
+ markRows();
+}
+function clearSong(){ cur=null; slides=[]; subs=[]; idx=-1; $('partsList').textContent=''; $('songInfo').textContent=''; $('btnEdit').style.display='none'; renderLangBar(); }
+
+// ── finding lyrics ──
+const LRC='https://lrclib.net/api';
+const LRC_HEAD={'Lrclib-Client':'M TECH INC Lyrics '+MT.VERSION+' ('+MT.CFG.home+')'}; // LRCLIB asks apps to identify themselves
+const STOP=new Set('a an and are as at be by for from he her him his how i im in is it its me my no not of oh on or our she so that the their them they this to us was we what when who why will with you your'.split(' '));
+function words(s){ return fold(s).split(' ').filter(Boolean); }
+function keyWords(s){ const w=words(s), k=w.filter(x=>x.length>2&&!STOP.has(x)); return k.length?k:w; }
+function lineWith(text,q){ const fq=fold(q); return fq?(str(text).split('\n').find(l=>fold(l).includes(fq))||'').trim():''; }
+let searchSeq=0, rs=null; // rs = the search on screen; searchSeq drops answers from older searches
+
+function searchLibrary(t,w){
+ const ft=fold(t), tw=keyWords(t), ww=words(w), out=[];
+ lib.forEach(s=>{
+  const st=fold(s.title), sa=fold(s.writer), sl=fold(s.lyrics+' '+Object.values(s.tr||{}).join(' ')); // translations count as words from the song
+  if(ww.length&&!ww.every(x=>sa.includes(x))) return;
+  let score=0, line='';
+  if(ft){
+   if(st===ft) score=100;
+   else if(st.startsWith(ft)) score=80;
+   else if(tw.every(x=>st.includes(x))) score=60;
+   else if(ft.length>=5&&sl.includes(ft)){ score=50; line=lineWith(s.lyrics,t); }        // a line from the song
+   else if(tw.length&&tw.every(x=>sl.includes(x))){ score=30; line=lineWith(s.lyrics,tw[0]); }
+   else return;
+  } else score=40;                                                                       // singer only
+  out.push({song:s,score,line});
+ });
+ return out.sort((a,b)=>b.score-a.score).slice(0,8);
+}
+
+// Titles from music catalogues carry extras like "(Live)" or "[Official Video]" that don't belong on screen.
+function cleanTitle(t){
+ return str(t).replace(/\s*[\[(](official\s*(music\s*|lyric\s*)?video|official\s*audio|lyrics?(\s*video)?|audio|visuali[sz]er|video|hd|hq)[\])]/gi,'')
+  .replace(/\s*[\[(]live\b[^\])]*[\])]/gi,'').replace(/\s{2,}/g,' ').trim();
+}
+function niceTitle(c){ let t=cleanTitle(c.title); const m=t.match(/^(.*?)\s[-–]\s(.+)$/); if(m&&fold(m[1])===fold(c.artist)) t=m[2]; return t||str(c.title); }
+// Section labels become part breaks; verses longer than 4 lines are cut into 2-line parts for lower thirds.
+const LABEL=/^\s*(?:[\[(]\s*(?:verse|chorus|pre-?chorus|bridge|intro|outro|hook|refrain|tag|vamp|interlude|instrumental|repeat|ending)\b[^\])]*[\])]|(?:verse|chorus|pre-?chorus|bridge|intro|outro|hook|refrain|tag|vamp|interlude|ending)(?:\s*\d+)?\s*:?)\s*$/i;
+function formatLyrics(text){
+ const lines=str(text).replace(/\r\n?/g,'\n').split('\n').map(l=>LABEL.test(l)?'':l.replace(/\s+$/,''));
+ const out=[];
+ lines.join('\n').split(/\n\s*\n/).forEach(st=>{
+  const ls=st.split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!ls.length) return;
+  if(ls.length<=4){ out.push(ls.join('\n')); return; }
+  for(let i=0;i<ls.length;i+=2) out.push(ls.slice(i,i+2).join('\n'));
+ });
+ return out.join('\n\n');
+}
+
+async function getJSON(url,headers){ const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(),9000); try{ const r=await fetch(url,{signal:ctrl.signal,headers:headers||{}}); return await r.json().catch(()=>null); }finally{ clearTimeout(t); } }
+async function ovhLyrics(a,t){ const d=await getJSON(OVH+'/v1/'+encodeURIComponent(a)+'/'+encodeURIComponent(t)); return norm(d&&d.lyrics).replace(/^Paroles de la chanson .*(\n|$)/i,'').trim(); }
+async function ovhSuggest(q){ const d=await getJSON(OVH+'/suggest/'+encodeURIComponent(q)); if(!d||!Array.isArray(d.data)) throw new Error('lyrics.ovh'); return d.data.map(x=>({title:str(x.title_short||x.title),artist:str(x.artist&&x.artist.name),lyrics:'',src:'ovh'})).filter(x=>x.title&&x.artist); }
+async function lrcSearch(params){
+ const u=new URL(LRC+'/search'); Object.keys(params).forEach(k=>u.searchParams.set(k,params[k]));
+ const d=await getJSON(u.href,LRC_HEAD);
+ if(!Array.isArray(d)) throw new Error('lrclib');
+ return d.filter(r=>r&&!r.instrumental).map(r=>({title:str(r.trackName||r.name),artist:str(r.artistName),lyrics:str(r.plainLyrics).trim(),src:'lrclib'}));
+}
+async function lrcGet(title,artist){
+ const u=new URL(LRC+'/get'); u.searchParams.set('track_name',title); u.searchParams.set('artist_name',artist);
+ const d=await getJSON(u.href,LRC_HEAD);
+ return d&&!d.instrumental?str(d.plainLyrics).trim():'';
+}
+async function fetchLyrics(title,artist){
+ const clean=cleanTitle(title);
+ const tries=[()=>lrcGet(title,artist), ()=>clean!==title?lrcGet(clean,artist):'',
+  ()=>lrcSearch({track_name:clean,artist_name:artist}).then(r=>(r.find(x=>x.lyrics)||{}).lyrics||''),
+  ()=>ovhLyrics(artist,title), ()=>clean!==title?ovhLyrics(artist,clean):''];
+ for(const f of tries){ try{ const l=await f(); if(l) return l; }catch(e){} }
+ return '';
+}
+
+function rankOnline(list,t,w){
+ const ft=fold(t), kw=keyWords(t);
+ return list.map(c=>{
+  const title=niceTitle(c), fct=fold(title); let s=0;
+  if(ft){
+   if(fct===ft) s+=60; else if(fct.startsWith(ft)||(fct.length>3&&ft.startsWith(fct))) s+=40;
+   s+=40*sim(t,title);
+   if(c.lyrics){ const fl=fold(c.lyrics); if(ft.length>=5&&fl.includes(ft)) s+=50; else if(kw.length&&kw.every(x=>fl.includes(x))) s+=15; }
+  }
+  if(w){ const sa=sim(w,c.artist); s+=40*sa; if(!sa&&!fold(c.artist).includes(fold(w))) s-=25; }
+  if(c.lyrics) s+=10;                                                                    // ready to use
+  const line=c.lyrics?(lineWith(c.lyrics,t)||lineWith(c.lyrics,kw[0]||'')||c.lyrics.split('\n').find(l=>l.trim())||''):'';
+  return Object.assign({},c,{shown:title,score:s,line:line.trim()});
+ }).filter(c=>c.score>=20).sort((a,b)=>b.score-a.score).slice(0,8);
+}
+
+function showResults(t,w,local){
+ rs={my:++searchSeq,t,w,local,online:[],pending:0,failed:0,total:0};
+ $('results').hidden=false;
+ runOnline(rs);   // starts the searches and counts them first, so the panel opens with "Searching online…"
+ renderResults();
+}
+function closeResults(){ searchSeq++; rs=null; $('results').hidden=true; $('results').textContent=''; }
+function runOnline(st){
+ const {t,w}=st, kw=keyWords(t).slice(0,2).join(' '), cands=new Map();
+ const add=list=>list.forEach(c=>{
+  const k=fold(niceTitle(c))+'|'+fold(c.artist), old=cands.get(k);
+  if(!old) cands.set(k,c); else if(!old.lyrics&&c.lyrics) cands.set(k,Object.assign({},old,c));
+ });
+ const jobs=[];                                       // several short searches at once; long free-text queries are unreliable
+ if(t&&w) jobs.push(lrcSearch({track_name:t,artist_name:w}));
+ if(t) jobs.push(lrcSearch({track_name:t}));
+ if(w) jobs.push(lrcSearch({q:w}));
+ if(t&&kw&&kw!==fold(t)) jobs.push(lrcSearch({q:(kw+' '+w).trim()}));
+ jobs.push(ovhSuggest((t+' '+w).trim()));
+ if(w) jobs.push(ovhSuggest(w));
+ if(t&&w) jobs.push(ovhSuggest(t));
+ st.pending=st.total=jobs.length;
+ jobs.forEach(p=>p.then(list=>{ if(st.my===searchSeq) add(list); },()=>{ st.failed++; }).then(()=>{
+  if(st.my!==searchSeq) return;
+  st.pending--; st.online=rankOnline([...cands.values()],t,w); renderResults();
+ }));
+}
+function el(tag,cls,text){ const e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
+function resultItem(title,sub,line,tag,ready,onPick){
+ const b=el('button','rsItem'); b.type='button';
+ const main=el('span','rsMain'); main.appendChild(el('span','rsTitle',title)); if(sub) main.appendChild(el('span','rsSub',sub)); if(line) main.appendChild(el('span','rsSnip','“'+line+'”'));
+ b.appendChild(main); b.appendChild(el('span','rsSrc'+(ready?' ready':''),tag));
+ b.addEventListener('click',()=>onPick(b));
+ return b;
+}
+function renderResults(){
+ const box=$('results'); if(!rs) return;
+ box.textContent='';
+ const head=el('div','rsHead');
+ head.appendChild(el('h2',null,'Results for “'+(rs.t||rs.w)+'”'+(rs.t&&rs.w?' by '+rs.w:'')));
+ const x=el('button','btn2 btnSmall','Close'); x.type='button'; x.addEventListener('click',closeResults); head.appendChild(x);
+ box.appendChild(head);
+ if(rs.local.length){
+  const g=el('div','rsGroup'); g.dataset.g='library'; g.appendChild(el('h3',null,'In your library'));
+  rs.local.forEach(r=>g.appendChild(resultItem(r.song.title,r.song.writer,r.line,'Open',true,()=>{ closeResults(); loadSong(r.song); })));
+  box.appendChild(g);
+ }
+ const g=el('div','rsGroup'); g.dataset.g='online'; g.appendChild(el('h3',null,'Online'));
+ rs.online.forEach(c=>g.appendChild(resultItem(c.shown,c.artist,c.line,c.lyrics?'Lyrics ready':'Look up lyrics',!!c.lyrics,b=>pickOnline(c,b))));
+ if(rs.pending){ const p=el('div','rsNote'); p.appendChild(el('span','spin')); p.appendChild(document.createTextNode('Searching online…')); g.appendChild(p); }
+ else if(!rs.online.length) g.appendChild(el('div','rsNote',rs.total&&rs.failed===rs.total?'Can’t reach the lyrics services. Check the internet connection and try again.':'No lyrics found online for this search. Try only the song title, or only the singer’s name.'));
+ box.appendChild(g);
+ const act=el('div','rsActions');
+ const web=el('a','btn2 btnSmall rsWeb','Search the web for lyrics'); web.href='https://www.google.com/search?q='+encodeURIComponent((rs.t+' '+rs.w).trim()+' lyrics'); web.target='_blank'; web.rel='noopener';
+ const add=el('button','btn2 btnSmall','+ Add lyrics yourself'); add.type='button'; add.addEventListener('click',()=>openEditor(false));
+ act.appendChild(el('span','rsHint','Not the right song?')); act.appendChild(web); act.appendChild(add);
+ box.appendChild(act);
+}
+async function pickOnline(c,btn){
+ const tag=btn.querySelector('.rsSrc'); btn.disabled=true; tag.textContent='Getting lyrics…';
+ const lyrics=c.lyrics||await fetchLyrics(c.title,c.artist);
+ if(!lyrics){ btn.disabled=false; tag.textContent='No lyrics online'; tag.className='rsSrc none'; return; }
+ const title=niceTitle(c);
+ upsert({title,writer:c.artist,lyrics:formatLyrics(lyrics)});                         // saves to the library and opens it
+ closeResults(); $('title').value=title; $('writer').value=c.artist;
+ toast('Saved to your library. Click a part to put it on screen.',4500);
+}
+function fold(s){ if(!foldRe){ try{ foldRe=[new RegExp('\\p{M}+','gu'),new RegExp('[^\\p{L}\\p{N}]+','gu')]; }catch(e){ foldRe=[/[̀-ͯ]+/g,/[^a-z0-9]+/g]; } } return str(s).normalize('NFD').replace(foldRe[0],'').toLowerCase().replace(foldRe[1],' ').trim(); }
+function near(a,b){ if(a===b)return true; if(a.length>=3&&b.length>=3&&(a.startsWith(b)||b.startsWith(a)))return true; if(Math.abs(a.length-b.length)>1||Math.min(a.length,b.length)<4)return false; let i=0,j=0,e=0; while(i<a.length&&j<b.length){ if(a[i]===b[j]){i++;j++;continue;} if(++e>1)return false; if(a.length>b.length)i++;else if(b.length>a.length)j++;else{i++;j++;} } return e+(a.length-i)+(b.length-j)<=1; }
+function sim(x,y){ const t=fold(x).split(' ').filter(Boolean),f=fold(y).split(' ').filter(Boolean); if(!t.length||!f.length)return 0; const share=(a,b)=>a.filter(x=>b.some(y=>near(x,y))).length/a.length; return Math.max(share(t,f),f.length>=2?share(f,t):0); }
+function upsert(song,replacing){
+ const s=cleanSong(song); if(!s)return;
+ // Translations follow the song part by part, so they're kept only while the number of parts stays the same.
+ if(replacing&&replacing.tr&&!s.tr&&parts(replacing.lyrics).length===parts(s.lyrics).length){ s.tr=replacing.tr; if(replacing.srcLang) s.srcLang=replacing.srcLang; }
+ if(replacing){const i=lib.indexOf(replacing);if(i>-1)lib.splice(i,1);} const d=lib.findIndex(x=>songKey(x)===songKey(s));if(d>-1)lib.splice(d,1); lib.unshift(s); saveLib(); loadSong(s); return s;
+}
+
+// ── translations: 🌐 Translate per song, saved with it; show Original, a language, or Both ──
+const LANGS=[['af','Afrikaans','Afrikaans'],['ak','Twi (Akan)','Akan'],['sq','Albanian','Shqip'],['am','Amharic','አማርኛ'],['ar','Arabic','العربية'],['hy','Armenian','Հայերեն'],
+ ['az','Azerbaijani','Azərbaycanca'],['eu','Basque','Euskara'],['be','Belarusian','Беларуская'],['bn','Bengali','বাংলা'],['bs','Bosnian','Bosanski'],['bg','Bulgarian','Български'],
+ ['my','Burmese','မြန်မာ'],['ca','Catalan','Català'],['ny','Chichewa','Chichewa'],['zh-CN','Chinese (Simplified)','简体中文'],['zh-TW','Chinese (Traditional)','繁體中文'],
+ ['hr','Croatian','Hrvatski'],['cs','Czech','Čeština'],['da','Danish','Dansk'],['nl','Dutch','Nederlands'],['en','English','English'],['eo','Esperanto','Esperanto'],
+ ['et','Estonian','Eesti'],['ee','Ewe','Eʋegbe'],['tl','Filipino','Filipino'],['fi','Finnish','Suomi'],['fr','French','Français'],['ff','Fula','Fulfulde'],['gl','Galician','Galego'],
+ ['ka','Georgian','ქართული'],['de','German','Deutsch'],['el','Greek','Ελληνικά'],['gu','Gujarati','ગુજરાતી'],['ht','Haitian Creole','Kreyòl ayisyen'],['ha','Hausa','Hausa'],
+ ['he','Hebrew','עברית'],['hi','Hindi','हिन्दी'],['hu','Hungarian','Magyar'],['is','Icelandic','Íslenska'],['ig','Igbo','Igbo'],['id','Indonesian','Bahasa Indonesia'],
+ ['ga','Irish','Gaeilge'],['it','Italian','Italiano'],['ja','Japanese','日本語'],['jv','Javanese','Basa Jawa'],['kn','Kannada','ಕನ್ನಡ'],['kk','Kazakh','Қазақ'],['km','Khmer','ខ្មែរ'],
+ ['rw','Kinyarwanda','Kinyarwanda'],['rn','Kirundi','Ikirundi'],['ko','Korean','한국어'],['ku','Kurdish','Kurdî'],['ky','Kyrgyz','Кыргызча'],['lo','Lao','ລາວ'],['la','Latin','Latina'],
+ ['lv','Latvian','Latviešu'],['ln','Lingala','Lingála'],['lt','Lithuanian','Lietuvių'],['lg','Luganda','Luganda'],['lb','Luxembourgish','Lëtzebuergesch'],['mk','Macedonian','Македонски'],
+ ['mg','Malagasy','Malagasy'],['ms','Malay','Bahasa Melayu'],['ml','Malayalam','മലയാളം'],['mt','Maltese','Malti'],['mi','Maori','Te Reo Māori'],['mr','Marathi','मराठी'],
+ ['mn','Mongolian','Монгол'],['ne','Nepali','नेपाली'],['no','Norwegian','Norsk'],['om','Oromo','Afaan Oromoo'],['ps','Pashto','پښتو'],['fa','Persian','فارسی'],['pl','Polish','Polski'],
+ ['pt','Portuguese','Português'],['pa','Punjabi','ਪੰਜਾਬੀ'],['ro','Romanian','Română'],['ru','Russian','Русский'],['sm','Samoan','Gagana Samoa'],['sr','Serbian','Српски'],
+ ['st','Sesotho','Sesotho'],['tn','Setswana','Setswana'],['sn','Shona','chiShona'],['sd','Sindhi','سنڌي'],['si','Sinhala','සිංහල'],['sk','Slovak','Slovenčina'],['sl','Slovenian','Slovenščina'],
+ ['so','Somali','Soomaali'],['es','Spanish','Español'],['su','Sundanese','Basa Sunda'],['sw','Swahili','Kiswahili'],['sv','Swedish','Svenska'],['tg','Tajik','Тоҷикӣ'],['ta','Tamil','தமிழ்'],
+ ['te','Telugu','తెలుగు'],['th','Thai','ไทย'],['ti','Tigrinya','ትግርኛ'],['tr','Turkish','Türkçe'],['uk','Ukrainian','Українська'],['ur','Urdu','اردو'],['uz','Uzbek','Oʻzbekcha'],
+ ['vi','Vietnamese','Tiếng Việt'],['cy','Welsh','Cymraeg'],['wo','Wolof','Wolof'],['xh','Xhosa','isiXhosa'],['yi','Yiddish','ייִדיש'],['yo','Yoruba','Yorùbá'],['zu','Zulu','isiZulu']];
+const LANG={}; LANGS.forEach(([c,e,n])=>{ LANG[c]={c,e,n}; });
+const POPULAR=['fr','it','es','pt','de','sw','yo','ig','ha','ln','ar','zh-CN'];
+const TYPE_ONLY=new Set(['ak','ln','lg','rn','wo']); // the free translators get these wrong (tested Oct 2026), so people type them
+function canTranslate(c){ return !!LANG[c]&&!TYPE_ONLY.has(c); }
+function knownLang(c){ return !!LANG[c]||isCustomLang(c); }
+function langName(c){ return LANG[c]?LANG[c].n:c; }
+let view=(()=>{ try{ const v=JSON.parse(localStorage.getItem('mtech_view')||'null'); if(v&&knownLang(v.lang)) return {lang:v.lang,both:!!v.both}; }catch(e){} return {lang:'',both:false}; })();
+function saveView(){ try{ localStorage.setItem('mtech_view',JSON.stringify(view)); }catch(e){} }
+function shownLang(){ return cur&&view.lang&&cur.tr&&cur.tr[view.lang]?view.lang:''; }
+function buildSlides(){
+ const orig=parts(cur.lyrics), lang=shownLang(), tr=lang?parts(cur.tr[lang]):null;
+ if(!tr){ slides=orig; subs=orig.map(()=>''); return; }
+ if(view.both){ slides=orig; subs=orig.map((_,i)=>tr[i]||''); }           // original, translation underneath
+ else { slides=orig.map((p,i)=>tr[i]||p); subs=orig.map(()=>''); }
+}
+function refreshView(){
+ if(!cur) return;
+ const was=idx>=0&&onAirText!==''&&slides[idx]===onAirText&&(subs[idx]||'')===onAir.sub?idx:-1;
+ buildSlides(); renderRows(); renderLangBar();
+ if(was>=0) goLive(was);                                                      // the part on screen switches language at once
+}
+function setView(lang,both){ view={lang,both:!!(lang&&both)}; saveView(); refreshView(); }
+function renderLangBar(){
+ const bar=$('langBar'), btn=$('btnTranslate'); bar.textContent='';
+ btn.style.display=cur?'':'none'; if(!cur) return;
+ const have=Object.keys(cur.tr||{}), showing=shownLang();
+ if(!have.length) return;
+ const chip=(label,on,fn,title)=>{ const b=el('button','langChip',label); b.type='button'; b.setAttribute('aria-pressed',String(on)); b.title=title; b.addEventListener('click',fn); bar.appendChild(b); };
+ chip('Original',!showing,()=>setView('',false),'Show the lyrics as written');
+ have.forEach(c=>chip(langName(c),showing===c&&!view.both,()=>setView(c,false),'Show the '+(LANG[c]?LANG[c].e:c)+' translation'));
+ if(showing) chip('Both',view.both,()=>setView(showing,!view.both),'Show the original with '+langName(showing)+' underneath');
+}
+
+let trPick='', trMode='tr', translating=false;
+function recentLangs(){ try{ return (JSON.parse(localStorage.getItem('mtech_tr_recent')||'[]')||[]).filter(knownLang).slice(0,5); }catch(e){ return []; } }
+function pushRecent(c){ try{ localStorage.setItem('mtech_tr_recent',JSON.stringify([c].concat(recentLangs().filter(x=>x!==c)).slice(0,5))); }catch(e){} }
+function buildTrFrom(){ LANGS.forEach(([c,e,n])=>{ const o=document.createElement('option'); o.value=c; o.textContent=n===e?e:e+' ('+n+')'; $('trFrom').appendChild(o); }); $('trFrom').value='en'; }
+function trStatus(msg,bad){ const s=$('trStatus'); s.textContent=msg; s.classList.toggle('bad',!!bad); }
+function syncTrMode(){ $('trMode').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===trMode))); }
+function updateTrButtons(){
+ const saved=!!(cur&&cur.tr&&trPick&&cur.tr[trPick]), auto=canTranslate(trPick);
+ $('trGo').textContent=!trPick?'Translate':saved?'Show '+langName(trPick):auto?'Translate to '+langName(trPick):'Type it in '+langName(trPick);
+ $('trAgain').hidden=!saved||!auto;
+ $('trManual').hidden=!!trPick&&!auto&&!saved;                                  // the main button already types it
+ $('trGo').disabled=translating||!trPick||trPick===$('trFrom').value;
+}
+function openTranslate(){
+ if(!cur) return;
+ const from=cur.srcLang||'en';
+ $('trFrom').value=from;
+ trPick=[view.lang].concat(recentLangs(),['fr','en']).find(c=>c&&knownLang(c)&&c!==from);
+ trMode=view.both?'both':'tr';
+ $('trSearch').value=''; trStatus('');
+ renderLangList(); syncTrMode(); updateTrButtons();
+ const d=$('trDialog'); if(d.showModal) d.showModal(); else d.setAttribute('open','');
+ const s=$('trList').querySelector('[aria-selected=true]'); if(s) s.scrollIntoView({block:'nearest'});
+}
+function closeTr(){ const d=$('trDialog'); if(d.close) d.close(); else d.removeAttribute('open'); }
+function renderLangList(){
+ const raw=$('trSearch').value, q=fold(raw), from=$('trFrom').value, list=$('trList'), rec=recentLangs(), has=c=>!!(cur&&cur.tr&&cur.tr[c]);
+ const mine=[...new Set(Object.keys(cur&&cur.tr||{}).concat(rec))].filter(isCustomLang).map(c=>[c,c,c]); // languages people named themselves
+ const all=LANGS.concat(mine);
+ const rank=c=>rec.includes(c)?rec.indexOf(c):has(c)?5:POPULAR.includes(c)?10+POPULAR.indexOf(c):100;
+ const items=all.filter(([c,e,n])=>c!==from&&(!q||fold(e).includes(q)||fold(n).includes(q)||c.toLowerCase()===q))
+  .sort((a,b)=>rank(a[0])-rank(b[0])||a[1].localeCompare(b[1]));
+ const typed=customName(raw);                                                   // any other language: they type the words
+ if(q&&isCustomLang(typed)&&!all.some(([c,e,n])=>fold(e)===q||fold(n)===q||fold(c)===q)) items.push([typed,typed,typed,1]);
+ if(q&&!items.some(i=>i[0]===trPick)) trPick=items.length?items[0][0]:'';      // typing picks the best match
+ list.textContent='';
+ items.forEach(([c,e,n,other])=>{
+  const b=el('button','langOpt'); b.type='button'; b.setAttribute('role','option'); b.setAttribute('aria-selected',String(c===trPick)); b.dataset.code=c;
+  const nn=el('span','ln',other?'Other: '+n:n); nn.dir='auto'; b.appendChild(nn); if(n!==e) b.appendChild(el('span','le',e));
+  if(!canTranslate(c)) b.appendChild(el('span','lt','You type it'));
+  if(has(c)) b.appendChild(el('span','ls','Saved'));
+  b.addEventListener('click',()=>{ trPick=c; list.querySelectorAll('.langOpt').forEach(x=>x.setAttribute('aria-selected',String(x===b))); updateTrButtons(); trStatus(''); });
+  b.addEventListener('dblclick',()=>runTranslate(false));
+  list.appendChild(b);
+ });
+ if(!items.length) list.appendChild(el('div','rsNote','No language matches. Try its English name, for example “French”.'));
+ updateTrButtons();
+}
+async function runTranslate(force){
+ if(translating||!cur||!trPick) return;
+ const to=trPick, from=$('trFrom').value, song=cur;
+ if(to===from){ trStatus('Pick a different language from the one the song is in.',true); return; }
+ if(!force&&song.tr&&song.tr[to]){ closeTr(); setView(to,trMode==='both'); return; }
+ if(!canTranslate(to)){ typeTranslation(); return; }                          // no free translator for it: they type it
+ translating=true; $('trGo').disabled=$('trAgain').disabled=true;
+ try{
+  const text=await translateSong(song,from,to,trStatus);
+  song.tr=Object.assign({},song.tr,{[to]:text}); song.srcLang=from; saveLib(); pushRecent(to);
+  closeTr();
+  if(cur===song) setView(to,trMode==='both');
+  toast('Translated to '+langName(to)+' and saved with the song. Check it, and fix any line with ✎ Edit.',5000);
+ }catch(e){
+  const m=String(e&&e.message||e);
+  trStatus(m==='quota'?'The free online translator’s daily limit is used up on this connection. Try again tomorrow, use Chrome or Edge on a computer (no limit for its languages), or choose Type it myself.'
+   :m==='offline'?'Can’t reach the translation service. Check the internet connection and try again.'
+   :m==='unchanged'?'The translator gave the words back unchanged. Check that “Song is in” is right, or choose Type it myself.'
+   :'This language couldn’t be translated ('+m+'). Try another language, or choose Type it myself.',true);
+ }finally{ translating=false; $('trAgain').disabled=false; updateTrButtons(); }
+}
+function typeTranslation(){ if(!cur||!trPick||trPick===$('trFrom').value) return; const lang=trPick; closeTr(); openEditor(true,lang,true); }
+
+// Engines: Chrome/Edge's built-in translator when it has the language (free, unlimited, on this computer),
+// otherwise MyMemory online (free: 5,000 characters a day per connection, 500 bytes per request).
+async function getEngine(from,to,status){
+ if('Translator' in self){
+  const dc=c=>c==='zh-CN'?'zh':c==='zh-TW'?'zh-Hant':c;
+  try{
+   const a=await Translator.availability({sourceLanguage:dc(from),targetLanguage:dc(to)});
+   if(a&&a!=='unavailable'){
+    if(a!=='available') status('Getting the '+(LANG[to]?LANG[to].e:to)+' language pack ready (first time only)…');
+    const t=await Translator.create({sourceLanguage:dc(from),targetLanguage:dc(to),monitor(m){ m.addEventListener('downloadprogress',e=>status('Downloading the '+(LANG[to]?LANG[to].e:to)+' language pack… '+Math.round((e.loaded||0)*100)+'%')); }});
+    return {name:'device',translate:s=>t.translate(s)};
+   }
+  }catch(e){ /* not available here: use the online translator */ }
+ }
+ return {name:'online',translate:s=>myMemory(s,from,to)};
+}
+const utf8=new TextEncoder(), bytes=s=>utf8.encode(s).length;
+function chunks(text,max){ // whole lines, at most `max` bytes each; an over-long line is split between words
+ const out=[]; let acc='';
+ const push=s=>{ if(bytes(s)<=max){ out.push(s); return; } let piece=''; s.split(' ').forEach(w=>{ const c=piece?piece+' '+w:w; if(bytes(c)>max&&piece){ out.push(piece); piece=w; } else piece=c; }); if(piece) out.push(piece); };
+ text.split('\n').forEach(line=>{ const c=acc?acc+'\n'+line:line; if(bytes(c)>max&&acc){ push(acc); acc=line; } else acc=c; });
+ if(acc) push(acc);
+ return out;
+}
+async function translateText(eng,text){
+ if(!text.trim()) return text;
+ if(eng.name==='device'){
+  const lines=text.split('\n'), r=str(await eng.translate(text));
+  if(lines.length<2||r.split('\n').length===lines.length) return r;
+  const out=[]; for(const l of lines) out.push(l.trim()?str(await eng.translate(l)).replace(/\s*\n\s*/g,' '):l); // keep the song's line breaks
+  return out.join('\n');
+ }
+ const out=[]; for(const c of chunks(text,450)) out.push(await eng.translate(c));
+ return out.join('\n');
+}
+async function translateSong(song,from,to,status){
+ const ps=parts(song.lyrics), out=new Array(ps.length);
+ let eng=await getEngine(from,to,status), done=0, next=0, same=0;
+ const where=()=>eng.name==='device'?' on this computer':' online';
+ status('Translating'+where()+'…');
+ const one=async i=>{
+  try{ return await translateText(eng,ps[i]); }
+  catch(e){ if(eng.name!=='device') throw e; eng={name:'online',translate:s=>myMemory(s,from,to)}; return await translateText(eng,ps[i]); } // built-in translator failed: go online
+ };
+ const worker=async()=>{ while(next<ps.length){ const i=next++; const t=norm(await one(i)).replace(/\n\s*\n+/g,'\n'); if(!t||fold(t)===fold(ps[i])) same++; out[i]=t||ps[i]; done++; status('Translating'+where()+': part '+done+' of '+ps.length+'…'); } };
+ await Promise.all(Array.from({length:Math.min(eng.name==='device'?1:3,ps.length)},worker));
+ if(same===ps.length) throw new Error('unchanged');
+ return out.join('\n\n');
+}
+async function myMemory(text,from,to){
+ const u=new URL('https://api.mymemory.translated.net/get'); u.searchParams.set('q',text); u.searchParams.set('langpair',from+'|'+to);
+ if(MT.CFG.translateEmail) u.searchParams.set('de',MT.CFG.translateEmail);
+ let d; try{ d=await getJSON(u.href); }catch(e){ throw new Error('offline'); }
+ if(!d) throw new Error('offline');
+ const st=Number(d.responseStatus), det=String(d.responseDetails||'');
+ if(d.quotaFinished||st===429||/ALL AVAILABLE FREE TRANSLATIONS|QUOTA/i.test(det)) throw new Error('quota');
+ if(st!==200||!d.responseData) throw new Error(det||'the service returned an error');
+ // Prefer its machine translation: the shared memory's top match is sometimes junk (a copy of the English, or empty)
+ const mt=(Array.isArray(d.matches)?d.matches:[]).find(m=>m&&(m['created-by']==='MT!'||m.reference==='Machine Translation.')&&str(m.translation).trim());
+ const t=document.createElement('textarea'); t.innerHTML=str(mt?mt.translation:d.responseData.translatedText); return t.value; // decode &#39; and friends
+}
+
+// ── editor (a song, or one of its translations) ──
+let editingLang='';
+const NOTE_SONG='A blank line starts a new part. Labels like [Chorus] are removed when splitting.';
+const NOTE_TR='Replace each line with its translation and keep the blank lines between parts, so every part lines up with the original.';
+function openEditor(edit,lang,fresh){
+ if(edit&&!cur)return; editing=edit?cur:null; editingLang=edit&&lang&&((cur.tr&&cur.tr[lang])||fresh)?lang:'';
+ const has=!!(editingLang&&cur.tr&&cur.tr[editingLang]);
+ $('dlgHeading').textContent=editingLang?(has?'EDIT TRANSLATION (':'TYPE TRANSLATION (')+langName(editingLang).toUpperCase()+')':edit?'EDIT SONG':'ADD SONG';
+ $('dlgTitle').value=edit?cur.title:$('title').value.trim(); $('dlgWriter').value=edit?cur.writer:$('writer').value.trim();
+ $('dlgTitle').disabled=$('dlgWriter').disabled=!!editingLang;
+ $('dlgLyrics').value=editingLang?(has?cur.tr[editingLang]:cur.lyrics):edit?cur.lyrics:''; $('dlgSplit').checked=!edit;
+ $('dlgSplit').parentNode.hidden=!!editingLang; $('dlgNote').textContent=editingLang?NOTE_TR:NOTE_SONG;
+ const del=$('dlgDelete');del.style.display=edit&&(!editingLang||has)?'':'none';del.textContent=editingLang?'Delete translation':'Delete';del.removeAttribute('data-armed');
+ const d=$('songDialog');if(d.showModal)d.showModal();else d.setAttribute('open','');
+}
+function closeEditor(){ const d=$('songDialog');if(d.close)d.close();else d.removeAttribute('open'); }
+function saveSong(){
+ const raw=$('dlgLyrics').value;
+ if(editingLang){
+  const text=norm(raw); if(!text){toast('Type the translation, or use Delete translation');return;}
+  const lang=editingLang, isNew=!(cur.tr&&cur.tr[lang]);
+  cur.tr=Object.assign({},cur.tr,{[lang]:text}); saveLib(); closeEditor(); editingLang=''; editing=null;
+  if(isNew) pushRecent(lang);
+  setView(lang,view.lang===lang?view.both:trMode==='both');
+  toast(isNew?langName(lang)+' translation saved with the song.':'Translation updated.'); return;
+ }
+ const s={title:$('dlgTitle').value,writer:$('dlgWriter').value,lyrics:$('dlgSplit').checked?formatLyrics(raw):raw}; if(!cleanSong(s)){toast('Title and lyrics required');return;}
+ const was=!!editing, hadTr=!!(editing&&editing.tr), saved=upsert(s,editing); editing=null;closeEditor(); closeResults();
+ toast(was?(hadTr&&saved&&!saved.tr?'Song updated. Its translations were removed because the parts changed; translate it again.':'Song updated.'):'Song added.',hadTr?6000:2800);
+}
+function deleteSong(){
+ const del=$('dlgDelete'); if(!del.hasAttribute('data-armed')){del.setAttribute('data-armed','1');del.textContent='Tap again to delete';return;}
+ if(editingLang){ const tr=Object.assign({},cur.tr); delete tr[editingLang]; if(Object.keys(tr).length) cur.tr=tr; else delete cur.tr; saveLib(); closeEditor(); refreshView(); toast('Translation deleted.'); editingLang=''; editing=null; return; }
+ const i=lib.indexOf(editing);if(i>-1)lib.splice(i,1); editing=null;saveLib();closeEditor();clearSong();toast('Deleted.');
+}
+
+// ── backup ──
+function exportJSON(){ const b=new Blob([JSON.stringify(lib,null,2)],{type:'application/json'}); const u=URL.createObjectURL(b); const a=document.createElement('a');a.href=u;a.download='M-TECH-LYRICS-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000); }
+function importJSON(ev){ const f=ev.target.files&&ev.target.files[0]; ev.target.value=''; if(!f)return; const r=new FileReader(); r.onload=e=>{ let inc; try{inc=cleanList(JSON.parse(e.target.result));}catch(err){toast('Invalid file');return;} if(!inc.length){toast('No songs found');return;} const before=new Set(lib.map(songKey)),seen=new Set(); lib=inc.concat(lib).filter(s=>{const k=songKey(s);if(seen.has(k))return false;seen.add(k);return true;}); saveLib(); toast('Imported '+inc.length+' songs ('+[...new Set(inc.map(songKey).filter(k=>!before.has(k)))].length+' new)'); }; r.readAsText(f); }
+
+// ── messages ──
+function toast(msg,ms){ const t=$('toast');t.textContent=msg;t.classList.add('show'); clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),ms||2800); }
+function hideToast(){ clearTimeout(toastT);$('toast').classList.remove('show'); }
+
+// ── buttons & keyboard ──
+$('btnSearch').addEventListener('click', () => search(false));
+$('btnFetch').addEventListener('click', () => search(true));
+$('btnAdd').addEventListener('click', () => openEditor(false));
+$('btnEdit').addEventListener('click', () => openEditor(true, shownLang())); // edits the translation when one is on show
+$('btnTranslate').addEventListener('click', openTranslate);
+$('trCancel').addEventListener('click', closeTr);
+$('trManual').addEventListener('click', typeTranslation);
+$('trGo').addEventListener('click', () => runTranslate(false));
+$('trAgain').addEventListener('click', () => runTranslate(true));
+$('trSearch').addEventListener('input', renderLangList);
+$('trFrom').addEventListener('change', () => { renderLangList(); updateTrButtons(); });
+$('trMode').addEventListener('click', e => { const b = e.target.closest('button[data-v]'); if (!b) return; trMode = b.dataset.v; syncTrMode(); });
+$('btnExport').addEventListener('click', exportJSON);
+$('btnImport').addEventListener('click', () => $('importFile').click());
+$('importFile').addEventListener('change', importJSON);
+$('dlgDelete').addEventListener('click', deleteSong);
+$('dlgCancel').addEventListener('click', closeEditor);
+$('dlgSave').addEventListener('click', saveSong);
+
+document.addEventListener('keydown',e=>{
+ const tag=(e.target&&e.target.tagName||'').toLowerCase();
+ if(e.key==='Enter'&&(e.target.id==='title'||e.target.id==='writer')){e.preventDefault();search(false);return;}
+ if(e.key==='Enter'&&e.target.id==='trSearch'){e.preventDefault();runTranslate(false);return;}
+ if(e.key==='Escape'&&rs&&!$('songDialog').open){closeResults();return;}
+ if(/^(input|textarea|select)$/.test(tag)||$('songDialog').open||$('trDialog').open||e.ctrlKey||e.metaKey||e.altKey)return;
+ if(e.target.closest&&e.target.closest('#stylePanel'))return; // keys inside the style panel belong to its controls
+ if(e.key==='b'||e.key==='B'){e.preventDefault();clearScreen();return;}
+ if(!cur)return;
+ if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault();goLive(idx+1);}
+ else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();goLive(idx-1);}
+});
+
+buildStyleUI();
+syncStyleUI();
+buildTrFrom();
+layoutPreview();
+window.addEventListener('resize', layoutPreview);
+refreshLists();
+refreshStatus();
+$('title').addEventListener('change',()=>{ const v=$('title').value.trim().toLowerCase(); if(v&&lib.some(s=>s.title.toLowerCase()===v)&&!(cur&&cur.title.toLowerCase()===v))search(); });
+</script>
+</body>
+</html>
